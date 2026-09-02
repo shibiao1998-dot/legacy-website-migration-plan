@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>旧官网项目迁移计划（9 月 15 日正式切换）</title>
+<style>
+:root{
+  --ink:#151d27; --ink2:#3d4a5a; --ink3:#6b7787;
+  --paper:#ffffff; --surface:#f5f7f9; --surface2:#eef1f5;
+  --rule:#dde3ea; --rule2:#c7d0da;
+  --steel:#1f5b8f; --steel-bg:#eaf1f8;
+  --amber:#9a5b06; --amber-bg:#fdf3e3;
+  --crimson:#a02a2c; --crimson-bg:#fbecec;
+  --moss:#1d6b46; --moss-bg:#e9f4ee;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  --serif:"Songti SC","STSong","Source Han Serif SC","Noto Serif CJK SC","SimSun",serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,"Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--surface);color:var(--ink);
+  font:400 16px/1.75 var(--sans);font-variant-numeric:tabular-nums;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---- 文档头 ---- */
+.dochead{background:var(--paper);border-bottom:1px solid var(--rule)}
+.dochead .wrap{padding-top:44px;padding-bottom:0}
+h1{font:600 34px/1.35 var(--serif);letter-spacing:.01em;margin:0 0 10px}
+.sub{margin:0 0 26px;color:var(--ink3);font-size:13.5px;letter-spacing:.02em}
+.sub b{color:var(--ink2);font-weight:500}
+
+/* ---- 标签页 ---- */
+.tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--rule);margin-bottom:-1px}
+.tabs button{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+  font:500 15px/1 var(--sans);color:var(--ink3);padding:14px 16px;cursor:pointer;
+  display:flex;align-items:baseline;gap:8px;border-radius:4px 4px 0 0}
+.tabs button i{font-style:normal;font:600 12px/1 var(--mono);color:var(--rule2)}
+.tabs button:hover{color:var(--ink);background:var(--surface)}
+.tabs button[aria-selected="true"]{color:var(--steel);border-bottom-color:var(--steel)}
+.tabs button[aria-selected="true"] i{color:var(--steel)}
+.tabs button:focus-visible{outline:2px solid var(--steel);outline-offset:-2px}
+
+main .wrap{padding-top:34px;padding-bottom:80px}
+.panel{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:34px 40px 44px}
+.panelhead{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;
+  border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+.panelhead p{margin:0;color:var(--ink2);font-size:14.5px;max-width:64ch}
+.printbtn{flex:none;appearance:none;background:var(--paper);border:1px solid var(--rule2);
+  border-radius:4px;color:var(--ink2);font:500 13px/1 var(--sans);padding:9px 14px;cursor:pointer;white-space:nowrap}
+.printbtn:hover{border-color:var(--steel);color:var(--steel)}
+.printbtn:focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+
+/* ---- 正文排版 ---- */
+h2{font:600 21px/1.4 var(--sans);margin:44px 0 14px;padding-left:12px;
+  border-left:3px solid var(--steel);letter-spacing:.01em}
+h2:first-of-type{margin-top:0}
+h4{font:600 15.5px/1.5 var(--sans);margin:26px 0 8px}
+p{margin:0 0 12px}
+.lead{font-size:17px;line-height:1.85;color:var(--ink);margin-bottom:18px}
+.note{color:var(--ink3);font-size:14px;margin-bottom:14px}
+.inf{display:inline-block;font:500 11px/1 var(--sans);color:var(--amber);
+  background:var(--amber-bg);border:1px solid #e8d3ae;border-radius:3px;
+  padding:3px 5px;margin:0 3px;vertical-align:1px;letter-spacing:.04em}
+
+/* ---- 数字卡片 ---- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:5px;overflow:hidden;margin-bottom:22px}
+.card{background:var(--paper);padding:16px 16px 14px;display:flex;flex-direction:column;gap:2px}
+.card .num{font:600 30px/1.1 var(--mono);color:var(--steel);letter-spacing:-.02em}
+.card .lab{font-size:14px;color:var(--ink);line-height:1.5;margin-top:4px}
+.card .sub{font-size:12.5px;color:var(--ink3);line-height:1.5}
+
+.statusbox{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--amber);
+  border-radius:4px;padding:18px 22px}
+.statusbox h4{margin:0 0 8px}
+.statusbox p{margin:0;font-size:15px}
+
+/* ---- 三栏 ---- */
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:5px;overflow:hidden}
+.cols3 .col{background:var(--paper);padding:20px 20px 22px}
+.cols3 h4{margin:0 0 2px}
+.colsub{font-size:12.5px;color:var(--ink3);margin:0 0 12px}
+.cols3 ul{margin:0;padding-left:18px}
+.cols3 li{font-size:14px;line-height:1.7;margin-bottom:9px;color:var(--ink2)}
+
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px}
+.yn{border:1px solid var(--rule);border-radius:5px;padding:16px 20px 18px}
+.yn.yes{background:var(--moss-bg);border-color:#cfe3d8}
+.yn.no{background:var(--surface);border-color:var(--rule)}
+.yn h4{margin:0 0 8px}
+.yn.yes h4{color:var(--moss)}
+.yn ul{margin:0;padding-left:18px}
+.yn li{font-size:14.5px;line-height:1.8}
+.nb{border-top:1px solid var(--rule);padding:14px 0 2px}
+.nb b{display:block;font-size:15px;margin-bottom:4px}
+.nb p{margin:0;font-size:14.5px;color:var(--ink2)}
+
+/* ---- 日期轴 ---- */
+.rail{display:flex;gap:6px;flex-wrap:wrap;padding:16px 0 8px}
+.chip{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  min-width:52px;padding:7px 6px;border:1px solid var(--rule2);border-radius:4px;background:var(--paper)}
+.chip b{font:600 14px/1.2 var(--mono);color:var(--ink)}
+.chip i{font-style:normal;font-size:11px;color:var(--ink3);margin-top:2px}
+.chip.we{background:var(--surface2);border-color:var(--rule)}
+.chip.we b,.chip.we i{color:var(--ink3)}
+.chip.s-done{background:var(--moss-bg);border-color:#bcdac9}
+.chip.s-done b{color:var(--moss)}
+.chip.s-doing{background:var(--steel-bg);border-color:#bcd3e8}
+.chip.s-doing b{color:var(--steel)}
+.chip.s-blocked{background:var(--crimson-bg);border-color:#e8c2c2}
+.chip.s-blocked b{color:var(--crimson)}
+.chip.now{box-shadow:0 0 0 2px var(--steel);border-color:var(--steel)}
+.raillegend{font-size:12.5px;color:var(--ink3);margin:4px 0 18px}
+
+.mslist{list-style:none;margin:0;padding:0}
+.ms{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:14px 0;border-top:1px solid var(--rule)}
+.ms:last-child{border-bottom:1px solid var(--rule)}
+.msd{font:600 13.5px/1.6 var(--mono);color:var(--ink3);padding-top:2px}
+.msb b{display:block;font-size:15.5px;margin-bottom:3px}
+.msb p{margin:0;font-size:14.5px;color:var(--ink2)}
+.ms.k-risk .msd,.ms.k-final .msd{color:var(--crimson)}
+.ms.k-gate .msd{color:var(--steel)}
+.ms.k-final .msb b{color:var(--crimson)}
+
+/* ---- 风险 ---- */
+.risks{list-style:none;counter-reset:r;margin:0;padding:0}
+.risk{counter-increment:r;position:relative;padding:14px 16px 14px 52px;border:1px solid var(--rule);
+  border-radius:5px;margin-bottom:10px;background:var(--paper)}
+.risk::before{content:counter(r);position:absolute;left:16px;top:15px;
+  font:600 15px/1 var(--mono);color:var(--ink3)}
+.risk b{display:block;font-size:15.5px;margin-bottom:4px}
+.risk p{margin:0;font-size:14.5px;color:var(--ink2)}
+.risk.r-high{border-left:3px solid var(--crimson);background:#fffafa}
+.risk.r-high::before{color:var(--crimson)}
+.risk.r-ask{border-left:3px solid var(--steel)}
+.risk.r-ask::before{color:var(--steel)}
+.risk.r-mid{border-left:3px solid var(--amber)}
+.risk.r-mid::before{color:var(--amber)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.split h4{margin-top:0}
+.succ{margin:0;padding-left:22px}
+.succ li{font-size:14.5px;line-height:1.75;margin-bottom:7px}
+.fore{list-style:none;margin:0;padding:0}
+.fore li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.7;margin-bottom:11px}
+.fk{flex:none;font:500 12px/1.5 var(--sans);border-radius:3px;padding:2px 7px;white-space:nowrap;margin-top:2px}
+.f-ok{background:var(--moss-bg);color:var(--moss);border:1px solid #cfe3d8}
+.f-cond{background:var(--amber-bg);color:var(--amber);border:1px solid #e8d3ae}
+.f-out{background:var(--surface2);color:var(--ink3);border:1px solid var(--rule2)}
+
+/* ---- 步骤 ---- */
+.steps{margin:0;padding-left:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding:0 0 16px 46px;border-left:1px solid var(--rule);
+  margin-left:14px}
+.steps li:last-child{border-left-color:transparent}
+.steps li::before{content:counter(s);position:absolute;left:-14px;top:0;width:28px;height:28px;
+  border-radius:50%;background:var(--steel-bg);border:1px solid #bcd3e8;color:var(--steel);
+  font:600 13px/26px var(--mono);text-align:center}
+.st>b{display:block;font-weight:500;font-size:15.5px;line-height:1.65}
+.st p{margin:5px 0 0;font-size:14px;color:var(--ink3);line-height:1.7}
+.auto{margin:0;padding-left:20px}
+.auto li{font-size:14.5px;line-height:1.8;color:var(--ink2)}
+
+/* ---- 产品说明：界面标签 + 常见问题 ---- */
+.ui{font-weight:500;color:var(--steel);background:var(--steel-bg);border-radius:3px;
+  padding:1px 3px;white-space:nowrap}
+.faq{border-top:1px solid var(--rule)}
+.q{border-bottom:1px solid var(--rule);padding:14px 0}
+.q>b{display:block;font-size:15.5px;font-weight:600;margin-bottom:5px}
+.q p{margin:0;font-size:14.5px;color:var(--ink2)}
+
+/* ---- 表格 ---- */
+.tw{border:1px solid var(--rule);border-radius:5px;overflow:auto;margin:0 0 16px;background:var(--paper);
+  -webkit-overflow-scrolling:touch}
+.tw.tall{max-height:min(70vh,620px)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:640px;font-size:14px}
+thead th{position:sticky;top:0;z-index:2;background:var(--surface2);text-align:left;
+  font-weight:600;color:var(--ink2);padding:11px 14px;border-bottom:1px solid var(--rule2);
+  white-space:nowrap;font-size:13px;letter-spacing:.02em}
+tbody td,tbody th{padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top;
+  text-align:left;font-weight:400;line-height:1.65}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
+tbody tr:hover{background:var(--surface)}
+tbody tr.we{background:var(--surface2);color:var(--ink3)}
+tbody tr.we:hover{background:var(--surface2)}
+tbody tr.now{background:var(--steel-bg)}
+tbody tr.now:hover{background:var(--steel-bg)}
+tbody td.ph{color:var(--amber)}
+tbody td.end{color:var(--crimson)}
+tbody td.ph.end{color:var(--crimson)}
+td.ck{color:var(--ink2)}
+.badge{display:inline-block;font:500 11.5px/1 var(--sans);border-radius:3px;padding:4px 7px;
+  border:1px solid var(--rule2);background:var(--surface2);color:var(--ink3);white-space:nowrap}
+.b-done{background:var(--moss-bg);color:var(--moss);border-color:#cfe3d8}
+.b-doing{background:var(--steel-bg);color:var(--steel);border-color:#bcd3e8}
+.b-blocked{background:var(--crimson-bg);color:var(--crimson);border-color:#e8c2c2}
+th .badge{margin-left:8px;font-weight:400}
+.upd{font-size:13px;color:var(--ink3);margin-bottom:10px}
+.empty{background:var(--surface);border:1px dashed var(--rule2);border-radius:5px;
+  padding:16px 20px;color:var(--ink2);font-size:15px;margin-bottom:16px}
+
+/* ---- 附录折叠 ---- */
+.app{border:1px solid var(--rule);border-radius:5px;margin-bottom:10px;background:var(--paper)}
+.app>summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:15.5px;list-style:none;
+  display:flex;align-items:baseline;gap:8px}
+.app>summary::-webkit-details-marker{display:none}
+.app>summary::before{content:"▸";color:var(--ink3);font-size:12px;transform:translateY(-1px)}
+.app[open]>summary::before{content:"▾"}
+.app[open]>summary{border-bottom:1px solid var(--rule);background:var(--surface)}
+.app>summary:focus-visible{outline:2px solid var(--steel);outline-offset:-2px}
+.app .cnt{font:400 13px/1 var(--mono);color:var(--ink3)}
+.app>*:not(summary){padding:0 18px}
+.app>details, .app .treeblock{padding:6px 18px 14px}
+.treeblock h4{margin:16px 0 10px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;margin-bottom:14px}
+.mi{background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.mi span{font-size:12px;color:var(--ink3)}
+.mi b{font-size:13.5px;font-weight:500;line-height:1.55}
+
+/* ---- 页脚 ---- */
+footer{border-top:1px solid var(--rule);background:var(--paper)}
+footer .wrap{padding:22px 24px 34px;color:var(--ink3);font-size:13px}
+
+/* ---- 响应式 ---- */
+@media (max-width:900px){
+  .cols3,.cols2,.split{grid-template-columns:1fr}
+  .panel{padding:24px 20px 32px}
+  .ms{grid-template-columns:1fr;gap:4px}
+}
+@media (max-width:560px){
+  .wrap{padding:0 14px}
+  h1{font-size:25px}
+  .panel{padding:18px 14px 26px;border-radius:0;margin:0 -14px}
+  .panelhead{flex-direction:column;gap:12px}
+  .tabs button{padding:12px 10px;font-size:13.5px}
+  .cards{grid-template-columns:1fr 1fr}
+  .card .num{font-size:25px}
+  h2{font-size:18px}
+}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---- 打印 ---- */
+@media print{
+  body{background:#fff;font-size:11pt}
+  .wrap{max-width:none;padding:0}
+  .tabs,.printbtn,footer{display:none!important}
+  .panel{border:0;padding:0;border-radius:0}
+  .dochead{border-bottom:1px solid #999}
+  main .wrap{padding:0}
+  .tw{overflow:visible;border:1px solid #bbb}
+  .tw.tall{max-height:none}
+  table{min-width:0}
+  thead th{position:static;background:#eee}
+  .app>*:not(summary){display:block!important}
+  details{page-break-inside:auto}
+  h2{page-break-after:avoid}
+  tr,li,.risk,.ms{page-break-inside:avoid}
+  .card,.chip{box-shadow:none}
+  /* 「仅打印本页」：只留目标页 */
+  html[data-print-only] .panel{display:none!important}
+  html[data-print-only="migrate"] #p-migrate,
+  html[data-print-only="howto"] #p-howto,
+  html[data-print-only="plan"] #p-plan,
+  html[data-print-only="daily"] #p-daily{display:block!important}
+}
+</style>
+</head>
+<body>
+<header class="dochead">
+  <div class="wrap">
+    <h1>旧官网项目迁移计划（9 月 15 日正式切换）</h1>
+    <p class="sub">出具 2026-09-02 · AI项目官网项目组 · 数据来源：旧官网正式环境 2026-09-02 只读盘点</p>
+    <div class="tabs" role="tablist" aria-label="文档分页"><button role="tab" id="t-plan" data-tab="plan" aria-controls="p-plan" aria-selected="false" tabindex="-1"><i>01</i>总体计划</button><button role="tab" id="t-migrate" data-tab="migrate" aria-controls="p-migrate" aria-selected="false" tabindex="-1"><i>02</i>迁移说明</button><button role="tab" id="t-howto" data-tab="howto" aria-controls="p-howto" aria-selected="false" tabindex="-1"><i>03</i>产品使用说明</button><button role="tab" id="t-daily" data-tab="daily" aria-controls="p-daily" aria-selected="false" tabindex="-1"><i>04</i>按天日程</button></div>
+  </div>
+</header>
+<main><div class="wrap">
+<section class="panel" id="p-plan" role="tabpanel" aria-labelledby="t-plan" tabindex="0" hidden><div class="panelhead"><p>要做成什么、怎么做、什么时候做完、有什么风险、现在做到哪一步。</p><button class="printbtn" type="button" onclick="window.print()">打印全部</button></div>
+<h2>背景</h2><p>旧官网是公司所有项目定目标、看进度的地方。8 月下旬伟华给项目组定了要求：9 月 15 日前，至少 80% 的项目搬到新官网（AI 项目官网），旧官网陆续关掉；剩下背景特殊的项目之后再搬。</p><p>伟华同时讲清楚了怎么算做成：搬过去不算数，要看项目管理和项目执行是不是真的更快、更好、更省；这个由用它的人说了算——张彩霞、纵婷、刘佳文这些内部客户，也包括项目组自己。</p><p>8 月 20 日那次会之后，项目组按这个要求重新理了这份计划：什么时间做到哪一步，我们自己认的验收标准是什么。这一页是结论；后面三页是给主创看的操作说明和逐日安排，按需查看。</p>
+<h2>目的</h2><p>让上级项目定下的目标，在新官网里自动变成一条条具体的事务：AI 能做的 AI 做完、AI 先验一道；必须人做的，人来领、做、交、验。人只做三件事：确认目标的时间周期、指定哪条目标交给哪个项目做、验收结果。</p><p>9 月 15 日要拿出来的证明是：三位内部客户的项目集在新官网里这样转起来了，而且他们本人用过之后说了好还是不好。</p>
+<h2>核心结论</h2><h4>一、做成什么</h4><ul class="auto"><li>9 月 15 日前，五个项目集整体搬到新官网：管理AI化、AI-员工、Open-Q、AI生产环境+AI表演3.0、任运虚拟IP。旧官网挂在项目集下的项目一共 101 个，这次搬 82 个，占 81%。当天起旧官网停止编辑。</li><li>剩下的 19 个（另外 8 棵项目树）和 154 个独立项目属于背景特殊，9 月 15 日后谁申请谁搬。</li></ul><h4>二、怎么算做成：项目组自己认的三条，9 月 15 日当天全部要有</h4><ol class="steps"><li><div class="st"><b>数据搬完。</b><p>五个项目集的目标资料都在新官网上，旧官网停止编辑。</p></div></li><li><div class="st"><b>流程跑通。</b><p>每个项目集至少一个项目走完整个流程：上级确认时间周期 → 指定哪条目标交给哪个项目 → 执行项目接受 → 确认阶段周期 → AI 拆出事务清单 → 人领一条做完、验收通过。</p></div></li><li><div class="st"><b>客户用过并表了态。</b><p>张彩霞、纵婷、刘佳文各自在新官网上亲手把自己的项目集走一遍，然后回答三个问题：比旧官网省事了没有？AI 拆出来的事务能不能直接用？AI 做出来的东西能不能用？答案原话记进 9 月 15 日的状态表；谁说不行，就写清楚差在哪。</p></div></li></ol><h4>三、现在到哪一步（2026-09-02）</h4><ul class="auto"><li>计划已定，今天完成了旧官网数据的盘点（本文档的数字都来自这次盘点）。</li><li>「确认周期、指定承接、AI 拆事务」这套功能今天才发到测试环境，正式站上还没有；正式站现在只有管理AI化的 4 个项目。</li><li>9 月 3 日是第一道关：在测试环境用管理AI化把整个流程跑一遍。过了按计划走；没过，后面的日期全部顺延，当天告诉伟华。</li></ul><h4>四、今天还没有把握的两件事</h4><ul class="auto"><li>AI 把目标拆成事务这一步，还没有在从旧官网搬过来的项目上跑过，9 月 3 日才有结果。</li><li>AI 自动执行事务在正式站还没有开过，开了就按项目花钱。所以 9 月 15 日能保证的是：搬完、跑通、客户用过并表了态；AI 做出来的东西好不好，要用了才知道。</li></ul><h4>五、需要伟华定的两件事</h4><ol class="risks"><li class="risk r-ask"><b>80% 怎么算。</b><p>按「挂在项目集下的项目」算，这次搬 82 个、共 101 个，占 81%；按旧官网全部 255 个算只占 32%。独立项目里有 42 个最新版本还没到期（比如 AI通用能力研发、DJ工作事务、全球智慧教育大会2026），这次不搬，9 月 15 日后谁申请谁搬。请伟华确认这个算法。</p></li>
+<li class="risk r-ask"><b>Open-Quest academy 的 269 张单怎么处理。</b><p>伟华本人是它的上级主创。它在旧官网有 269 条中短期目标，确认周期后系统会一次发 269 张「这条目标交给哪个项目做」的单给伟华。建议在「项目集管理」里给它加一位真人主创，替伟华处理这些单。</p></li></ol>
+<h2>详情（按需展开）</h2>
+<details class="app"><summary>分批安排和时间轴　<span class="cnt">9/3 → 9/15</span></summary><div class="treeblock"><p>系统把整棵树搬过来并建第一个时间周期 → 上级主创确认周期、逐条指定哪条目标交给哪个项目 → 执行型主创接受、确认阶段周期 → AI 每 10 分钟扫一轮把目标拆成事务 → AI 能做的自动做并由 AI 先验，人做的领、做、交、验。主创只做确认和验收，操作说明见第 2、3 页。</p><div class="tw">
+<table>
+<thead><tr><th scope="col">批次</th><th scope="col">项目集</th><th scope="col">旧官网项目树编号</th><th scope="col">执行型项目数</th><th scope="col">真人主创</th><th scope="col">时间安排</th><th scope="col">先走一遍的项目</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>管理AI化（样板）</td><td>133016</td><td>4 个（3 个已搬，137532 补搬）</td><td>陈家彬、黄世彪、张威虎；上级主创陈洁媛、刘佳文</td><td>9/3 在测试环境跑通全流程 → 9/4 发到正式站、清掉旧数据、重新搬 → 9/4–9/5 走完全流程</td><td>136733 管理AI化的实施与运营（陈家彬）</td></tr>
+<tr><td>1</td><td>AI-员工</td><td>137264</td><td>17 个</td><td>11 位；上级主创纵婷、杜建强</td><td>9/5 夜里搬入 → 9/7–9/9 主创确认、AI 拆事务</td><td>137461 AI员工-场景需求管理（王雪滢）。最新版本 8/31 已结束，先开新版本再拆</td></tr>
+<tr><td>2</td><td>Open-Q（四棵树全进）</td><td>137181 / 133064 / 133970 / 135917</td><td>14 + 7 + 6 + 4 = 31 个</td><td>9 + 6 + 4 + 4 位；上级主创 张彩霞 / 金伟华 / 卢贤明 / 彭靖</td><td>9/8 夜里搬入 → 9/9–9/11 主创确认、AI 拆事务</td><td>135460 Open-Q-中国版（褚泽彬）。最新版本 9/4 到期，搬入时按当时的最新版本</td></tr>
+<tr><td>3</td><td>AI生产环境 + AI表演3.0</td><td>137164 / 132303</td><td>6 + 4 = 10 个</td><td>5 + 3 位；上级主创刘佳文 / 纵婷</td><td>9/10 夜里搬入 → 9/11–9/14 主创确认、AI 拆事务</td><td>AI表演：137315 表演解决方案研发的AI员工（吴梦赢）；AI生产环境：136513 生产管理AI化（溢鑫。旧官网上只有 AI 占位账号，先在项目集管理里把溢鑫补为主创）</td></tr>
+<tr><td>4</td><td>任运虚拟IP（覆盖率要过 80% 就靠这一批）</td><td>133942</td><td>11 个</td><td>9 位；上级主创 屈琦</td><td>9/12 夜里搬入 → 9/14 主创确认、AI 拆事务</td><td>136408 包子老师音乐学院（王雪滢）</td></tr>
+<tr><td>—</td><td>9/14 五个项目集总检查；9/15 正式使用</td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div><p class="note">刘佳文同时是管理AI化的上级主创、AI生产环境的上级主创，还是 137204 项目的主创，是排期里最拥挤的一个人，所以这三件事的时间被特意错开。</p><div class="rail"><span class="chip s-todo now"><b>9/2</b><i>周三</i></span><span class="chip s-todo"><b>9/3</b><i>周四</i></span><span class="chip s-todo"><b>9/4</b><i>周五</i></span><span class="chip s-todo we"><b>9/5</b><i>周六</i></span><span class="chip s-todo we"><b>9/6</b><i>周日</i></span><span class="chip s-todo"><b>9/7</b><i>周一</i></span><span class="chip s-todo"><b>9/8</b><i>周二</i></span><span class="chip s-todo"><b>9/9</b><i>周三</i></span><span class="chip s-todo"><b>9/10</b><i>周四</i></span><span class="chip s-todo"><b>9/11</b><i>周五</i></span><span class="chip s-todo we"><b>9/12</b><i>周六</i></span><span class="chip s-todo we"><b>9/13</b><i>周日</i></span><span class="chip s-todo"><b>9/14</b><i>周一</i></span><span class="chip s-todo"><b>9/15</b><i>周二</i></span></div><p class="raillegend">灰色为周末。带底色的是当天状态：绿=已完成、蓝=进行中、红=受阻、白=未开始。</p><ol class="mslist"><li class="ms k-gate"><span class="msd">9 月 3 日 · 周四</span><div class="msb"><b>测试环境跑通全流程</b><p>用管理AI化在测试环境从确认周期一路跑到 AI 拆出事务并有人领走。这是第一道关，跑不通后面全部顺延。</p></div></li>
+<li class="ms k-risk"><span class="msd">9 月 4 日 · 周五</span><div class="msb"><b>发到正式站、清掉旧数据、重新搬管理AI化</b><p>把这套功能发到正式站；清掉库里 22 个早期留下的项目集空壳，只留管理AI化；再把管理AI化整棵树重新搬一遍。发布和清数据不可逆，做之前先做全库备份。</p></div></li>
+<li class="ms k-load"><span class="msd">9 月 5 日 · 周六</span><div class="msb"><b>搬入 AI-员工</b><p>夜里把 AI-员工 整棵树（17 个执行型项目）搬进正式站并建第一个时间周期。</p></div></li>
+<li class="ms k-load"><span class="msd">9 月 8 日 · 周二</span><div class="msb"><b>搬入 Open-Q 四棵树</b><p>夜里一次搬入 31 个执行型项目，是数据量最大的一批。</p></div></li>
+<li class="ms k-load"><span class="msd">9 月 10 日 · 周四</span><div class="msb"><b>搬入 AI生产环境 + AI表演3.0</b><p>夜里搬入 10 个执行型项目。至此前四个项目集全部到位。</p></div></li>
+<li class="ms k-load"><span class="msd">9 月 12 日 · 周六</span><div class="msb"><b>搬入 任运虚拟IP</b><p>第五批。项目集内覆盖率从 69% 提到 81%，过 80% 靠这一批。</p></div></li>
+<li class="ms k-gate"><span class="msd">9 月 14 日 · 周一</span><div class="msb"><b>总检查 + 出状态表</b><p>没接受的单据、没确认的周期、失败的运行逐项清干净；出 9/15 状态表。</p></div></li>
+<li class="ms k-final"><span class="msd">9 月 15 日 · 周二</span><div class="msb"><b>正式使用</b><p>五个项目集以新官网为唯一维护入口，旧官网停止编辑；状态表交伟华，里面有三位客户的原话。</p></div></li></ol></div></details>
+<details class="app"><summary>为谁做、边界在哪　<span class="cnt">五个项目集</span></summary><div class="treeblock"><div class="tw">
+<table>
+<thead><tr><th scope="col">内部客户</th><th scope="col">项目集（执行型项目数）</th><th scope="col">搬过去之后要做的事</th></tr></thead>
+<tbody>
+<tr><td>张彩霞</td><td>AI教育-产品规划（14 个）</td><td>36 条中短期目标要逐条指定交给哪个项目做；14 个执行型项目由 AI 拆事务、AI 先验。</td></tr>
+<tr><td>纵婷</td><td>AI表演3.0（4 个）、AI-员工（17 个）</td><td>AI-员工 在旧官网只有 AI 占位账号，由她和杜建强接手做上级主创。</td></tr>
+<tr><td>刘佳文</td><td>AI生产环境（6 个）、管理AI化（4 个）</td><td>管理AI化是项目组自己的项目，先拿自己试；她同时是两个项目集的上级主创。</td></tr>
+<tr><td>金伟华</td><td>Open-Quest academy（7 个）</td><td>本人就是上级主创：269 条中短期目标会变成 269 张单发到他手上。</td></tr>
+<tr><td>卢贤明、彭靖、屈琦</td><td>Open-Q-内容（6 个）、Open-Q-教育游戏（4 个）、任运虚拟IP（11 个）</td><td>同样走一遍，不另设标准。</td></tr>
+</tbody>
+</table>
+</div><h4>边界</h4><ul class="auto"><li>搬目标资料：理想化状态、目标用户、核心价值、中短期目标、最新版本的阶段结项目标、主创。不搬任务，不搬历史版本。</li><li>整棵树原样搬，不改挂、不合并、不跨树。「哪条目标交给哪个项目做」旧官网没有这层关系，由上级主创逐条指定。</li><li>另外 8 棵树和 154 个独立项目属于背景特殊，9 月 15 日后由主创申请逐个搬。</li><li>AI 只自动做它标成「可自主完成」的事务，其余由人做；人只确认、验收和拿主意，不重复检查过程。</li></ul></div></details>
+<details class="app"><summary>数字　<span class="cnt">来自 9/2 盘点</span></summary><div class="treeblock"><div class="cards"><div class="card"><b class="num">255</b><span class="lab">旧官网执行中 + 正式立项的项目</span><span class="sub">2026-09-02 盘点</span></div>
+<div class="card"><b class="num">101</b><span class="lab">其中挂在项目集下的项目</span><span class="sub">17 棵项目树，含母项目</span></div>
+<div class="card"><b class="num">82</b><span class="lab">本次要搬的项目</span><span class="sub">五个项目集，占项目集内项目的 81%</span></div>
+<div class="card"><b class="num">73</b><span class="lab">要搬的执行型项目</span><span class="sub">前四个项目集 62 个 + 任运虚拟IP 11 个</span></div>
+<div class="card"><b class="num">52</b><span class="lab">要亲手操作的执行型项目主创</span><span class="sub">另有 8 位上级主创</span></div>
+<div class="card"><b class="num">444</b><span class="lab">要上级主创逐条指定交给谁做的中短期目标</span><span class="sub">旧官网没有这层关系</span></div>
+<div class="card"><b class="num">12</b><span class="lab">只挂 AI 占位账号、要补真人的项目</span><span class="sub">补人之后系统才知道单据发给谁</span></div>
+<div class="card"><b class="num">11</b><span class="lab">最新版本已结束或待验收的执行型项目</span><span class="sub">搬进来即需结项或开新版本</span></div></div></div></details>
+<details class="app"><summary>主要风险：项目组自己处理，伟华知道即可　<span class="cnt">6 条</span></summary><div class="treeblock"><ol class="risks"><li class="risk r-high"><b>这套功能还没发到正式站，AI 拆事务没在真实数据上跑通过</b><p>今天（9/2）才发到测试环境。9 月 3 日是第一道关，跑不通就当天报告并顺延。</p></li>
+<li class="risk r-high"><b>搬家工具目前只认管理AI化那 4 个项目</b><p>9 月 3 日改成任何项目集都能搬，这是 9 月 5 日能不能开始搬 AI-员工 的前提。</p></li>
+<li class="risk r-high"><b>「哪条目标交给哪个项目做」旧官网没有，全靠上级主创逐条指定</b><p>Open-Quest academy 269 张、AI教育-产品规划 36 张。已按原样搬不裁剪的口径写进排期。</p></li>
+<li class="risk r-mid"><b>12 个项目只挂着 AI 占位账号</b><p>项目集负责人在「项目集管理」里补真人主创，否则单据没人收；名单在第 2 页附录。</p></li>
+<li class="risk r-mid"><b>10 个执行型项目的最新版本已结束或待验收</b><p>搬进来没东西可拆，主创要么结项、要么开新版本写本周期目标。</p></li>
+<li class="risk r-mid"><b>刘佳文一人三个角色；发到正式站和清旧数据不可逆</b><p>三件事错开排期；发布和清数据前先做全库备份。</p></li></ol></div></details>
+</section>
+<section class="panel" id="p-migrate" role="tabpanel" aria-labelledby="t-migrate" tabindex="0" hidden><div class="panelhead"><p>给母项目主创（项目集负责人）和执行型项目主创看：迁移会发生什么、你要做哪几件事、你的项目清单在哪。</p><button class="printbtn" type="button" data-print="migrate">仅打印本页</button></div>
+<h2>4.1　迁移会发生什么（所有主创都要看）</h2><div class="cols2"><section class="yn yes"><h4>会搬过来的</h4><ul><li>项目档案（项目基本信息）</li><li>理想化状态、目标用户、核心价值</li><li>中短期目标</li><li>下面挂的执行型项目</li><li>阶段结项目标（只搬最新一个版本的）</li><li>主创身份</li></ul></section><section class="yn no"><h4>不会搬过来的</h4><ul><li>任务 / 事务（旧官网上的待办条目）</li><li>执行记录（谁在什么时候做了什么）</li><li>历史版本（只保留最新版本）</li></ul></section></div><div class="nb"><b>项目层级会被「拍平」</b><p>旧官网的项目树里，中间夹着很多预立项、已结项、或者类型不符合迁移规则的节点。这些节点不会搬过来，它们下面的子项目会直接挂到最近一个合规的上级项目、或者直接挂到根项目下。结果是：每棵树 85%–95% 的节点不会出现在新官网，你会看到自己的子项目明显变少了。这不是丢数据，是按规则跳过了不该迁的节点——旧官网的原始数据仍在。</p></div><div class="nb"><b>只搬最新版本</b><p>如果你的项目最新版本已经结束或正在等验收，那么搬过来的是一批已经完成的目标，AI 没有东西可拆。请登录后自己判断：是直接结项，还是开一个新版本、写本周期的阶段结项目标。</p></div><div class="nb"><b>只挂 AI 占位账号的项目</b><p>主创如果只是 AI 占位账号（名字像「AI负责人」「××项目测试号」），那不是真人。这类项目搬进来后由项目集负责人在项目集管理里补真人主创，系统会直接按这里维护的人发单据。</p></div><div class="nb"><b>旧官网 9/15 后停止编辑</b><p>切换之后旧官网和新官网不再互相同步，新官网的数据就是唯一起点。9/15 前旧官网上的改动仍会随下一次搬入带过来，但每次重新搬入会覆盖新官网上对应项目的档案，所以尽量不要在两边同时改。</p></div><div class="nb"><b>遇到问题怎么办</b><p>数据不对或功能有问题，直接反馈给AI项目官网项目组，每天下午有固定的修复窗口。不要退回旧官网自己改。主创配合这次迁移是公司战略要求。</p></div>
+<h2>4.2　母项目主创（项目集负责人）要做的事</h2><p class="lead">按顺序做，前一步没做完，后面的单据不会发出来。</p><ol class="steps"><li><div class="st"><b>收到「你的项目集已迁入」的通知后，登录新官网。</b></div></li><li><div class="st"><b>在「项目集管理」里维护主创：给只有 AI 占位账号的项目补上真人主创。</b><p>名单见本页下方你所在项目集的附录，「需注意」列里标了「仅AI占位账号」的就是。位置：管理工作台 → 治理 → 项目集管理 → 点进你的项目集 → 「主创席位」。</p></div></li><li><div class="st"><b>核对上级项目档案：理想化状态、目标用户、核心价值、中短期目标，和旧官网是否一致。</b></div></li><li><div class="st"><b>为每一个执行型项目重新指定它承接的中期目标。</b><p>新官网上这个选择项叫「承接的中期目标」（在处理母项目归属的卡片时出现）。重要：每次系统重新搬入覆盖之后，这一步都要重做一次。本次迁移窗口的具体入口以AI项目官网项目组通知为准——新官网没有一个叫「结构管理」的页面。</p></div></li><li><div class="st"><b>处理「中短期目标时间周期确认」单据：系统默认 3 个月，可以改。</b><p>确认之后，系统会给每一条还没有人承接的中短期目标各发一张承接指定单据。条数多的项目集会一次收到很多张——这是预期内的，不是系统出错。</p></div></li><li><div class="st"><b>处理「承接指定」单据：为每一条中短期目标指定一个执行型项目来承接。</b><p>规则：同一时间，一条中短期目标只能有一个承接项目；但一个执行型项目可以承接多条目标。系统会给出 AI 排好序的候选项目供你挑。没有被指定的执行型项目，不会收到阶段确认单据，AI 也不会给它拆事务。</p></div></li><li><div class="st"><b>如果执行型主创拒绝承接，同一批的其他单据会自动取消，你需要带上理由重新指定。</b></div></li><li><div class="st"><b>上级项目自己还在做的阶段目标：本次窗口先手工补到相应的执行型项目里。</b><p>后续平台会做一个新能力：由 AI 读上级项目最新版本的阶段目标，生成「新增/调整中短期目标」的建议单据发给你确认采纳。这个能力已列入开发清单，本次迁移窗口还用不上。</p></div></li><li><div class="st"><b>9 月 15 日起只在新官网维护本项目集，并回答项目组三个问题：比旧官网省事了没有、AI 拆的事务能不能用、AI 做的东西能不能用。</b></div></li></ol>
+<h2>4.3　执行型项目主创要做的事</h2><p class="lead">你收到通知才需要做；没收到单据不代表漏了你，见第 3 页「常见问题」。</p><ol class="steps"><li><div class="st"><b>登录新官网，在「项目主页」核对档案和最新版本的阶段结项目标。</b><p>如果最新版本已经结束或在等验收，请评估是结项还是新增本周期的阶段结项目标。</p></div></li><li><div class="st"><b>处理「承接确认」单据：本项目每一位主创都要接受。</b><p>只要有一个人拒绝，整张单据退回上级主创重新指定。</p></div></li><li><div class="st"><b>处理「阶段结项目标时间周期确认」单据。</b><p>你定的周期必须落在上级项目已确认的中短期周期之内。</p></div></li><li><div class="st"><b>确认完成后等 AI 拆事务：系统每 10 分钟扫描一轮，由 AI 员工把当前阶段结项目标拆成事务清单。</b><p>AI 拆的过程中如果需要你补充事实，会发一张「澄清」卡片给你，回答它才会继续拆。</p></div></li><li><div class="st"><b>在事务清单里看每条事务的标记：「AI 全程」/「人机协作」/「人执行」。</b><p>标成「AI 可自主完成」的，系统自动派给 AI 执行，并由 AI 验收官做第一道验收，你不用管。</p></div></li><li><div class="st"><b>需要人做的事务：在个人工作台的「我的事务」里点「领取事务」→ 做 → 点「去处理」回填结果（可选「已完成」「已延期」「未完成」，能附文件和链接）→ AI 初验 → 目标负责人终验。</b><p>初验没过可以返工一次，或者升级给目标负责人处理。</p></div></li><li><div class="st"><b>超过 8 个工作小时没人认领的事务，系统会提醒主创直接把事务指派给人。</b><p>这个提醒入口还在开发清单里，本次迁移窗口可能还看不到；在那之前请主创自己盯「我的事务」的「待处理」分组。</p></div></li><li><div class="st"><b>有问题反馈给AI项目官网项目组。</b></div></li></ol>
+<h2>4.4　系统会自动做的事（不用你操作）</h2><ul class="auto"><li>把整棵项目树搬进来：建项目集、建别名、搬档案、搬目标树、搬主创身份。</li><li>给新迁入的项目建立第一个时间周期。</li><li>发出「中短期目标时间周期确认」单据。</li><li>上级确认周期后，发出「承接指定」单据。</li><li>上级指定承接项目后，发出「承接确认」单据。</li><li>本项目全部主创接受后，发出「阶段结项目标时间周期确认」单据。</li><li>阶段周期确认后，自动把目标拆成事务清单。</li><li>AI 可自主完成的事务自动派发执行，并由 AI 验收官初验。</li><li>验收逾期提醒。</li><li>每天凌晨自动复核一次各项目的版本状态。</li></ul>
+<h2>4.5　各项目集项目清单（附录）</h2><p class="note">下面按项目集列出这次要搬的执行型项目。找到你自己的那一行，核对主创、最新版本和阶段结项目标数量；「需注意」一列写的是搬过来之后需要你处理的事情。「真人主创」一栏只列真人；只挂 AI 占位账号的项目写「—」，并在「需注意」里注明是哪个 AI 号。</p>
+<details class="app"><summary>管理AI化　<span class="cnt">4 个执行型项目</span></summary><div class="treeblock"><h4>管理AI化（旧官网树 133016）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>管理AI化（133016）</b></div><div class="mi"><span>根项目主创</span><b>陈洁媛、刘佳文</b></div><div class="mi"><span>中短期目标条数</span><b>7 条</b></div><div class="mi"><span>根项目最新版本</span><b>v12.0，截止 2026-09-30，阶段结项目标 6 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>48 个 / 4 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>128950</td><td>项目官网</td><td>—</td><td>v24.0 / 2026-09-09</td><td>9</td><td class="ph">已定主创为 黄世彪、张威虎，待在「项目集管理」里补上。仅 AI 占位账号（项目官网AI负责人），需项目集负责人补真人主创</td></tr>
+<tr><td>136733</td><td>管理AI化的实施与运营</td><td>陈家彬</td><td>v8.0 / 2026-09-30</td><td>5</td><td>—</td></tr>
+<tr><td>137522</td><td>AI-项目官网</td><td>—</td><td>v2.0 / 2026-10-08</td><td>6</td><td class="ph">已定主创为 黄世彪、张威虎，待在「项目集管理」里补上。仅 AI 占位账号（AI负责人194），需项目集负责人补真人主创</td></tr>
+<tr><td>137532</td><td>AI-native交付公司孵化</td><td>—</td><td>v2.0 / 2026-10-01</td><td>3</td><td class="ph">已定主创为 陈家彬，待在「项目集管理」里补上。仅 AI 占位账号（AI负责人192），需项目集负责人补真人主创；理想化状态为空</td></tr>
+</tbody>
+</table>
+</div></div></details>
+<details class="app"><summary>AI-员工　<span class="cnt">17 个执行型项目</span></summary><div class="treeblock"><h4>AI-员工（旧官网树 137264）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>AI-员工（137264）</b></div><div class="mi"><span>根项目主创</span><b>—（仅 AI 占位账号。已定由 纵婷、杜建强 担任，需在「项目集管理」里补上）</b></div><div class="mi"><span>中短期目标条数</span><b>6 条</b></div><div class="mi"><span>根项目最新版本</span><b>v5.0，截止 2026-09-06，阶段结项目标 7 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>117 个 / 17 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw tall">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>137327</td><td>AI员工-画作故事短视频制作（AI员工）</td><td>曾磊</td><td>v1.0 / 2026-08-15</td><td>4</td><td class="end">最新版本已于 2026-08-15 结束（全部目标完成，验收通过，版本结束），迁入后评估结项或开新版本；理想化状态为空</td></tr>
+<tr><td>137337</td><td>教育软件AI批量复刻项目</td><td>谢志华</td><td>v3.0 / 2026-09-11</td><td>7</td><td>理想化状态为空</td></tr>
+<tr><td>137371</td><td>AI表演-漫剧内容表演能力</td><td>傅桂芳</td><td>v3.0 / 2026-09-06</td><td>4</td><td>理想化状态为空</td></tr>
+<tr><td>137376</td><td>AI员工-AI写真馆</td><td>曾磊</td><td>v4.0 / 2026-10-01</td><td>6</td><td>理想化状态为空</td></tr>
+<tr><td>137383</td><td>AI员工-IP的lifestyle表演生成（AI员工）</td><td>曾磊</td><td>v4.0 / 2026-10-01</td><td>7</td><td>理想化状态为空</td></tr>
+<tr><td>137387</td><td>针对K12教师用户的AI员工的设计与搭建</td><td>柳彦</td><td>v4.0 / 2026-09-30</td><td>8</td><td>—</td></tr>
+<tr><td>137436</td><td>AI员工-专有知识库</td><td>高秀明</td><td>v2.0 / 2026-09-20</td><td>5</td><td>—</td></tr>
+<tr><td>137439</td><td>AI员工-程序员</td><td>方振华</td><td>v2.0 / 2026-09-01</td><td>1</td><td class="end">最新版本已于 2026-09-01 结束（待验收），迁入后评估结项或开新版本</td></tr>
+<tr><td>137461</td><td>AI员工-场景需求管理</td><td>王雪滢</td><td>v1.0 / 2026-08-31</td><td>1</td><td class="end">最新版本已于 2026-08-31 结束（待验收），迁入后评估结项或开新版本；理想化状态为空</td></tr>
+<tr><td>137471</td><td>EduBrainHK-香港K12校本AI员工-软硬件产品</td><td>宋全程</td><td>v2.0 / 2026-12-13</td><td>0</td><td>最新版本无阶段结项目标</td></tr>
+<tr><td>137479</td><td>外部算力供应的谈判</td><td>陈楚楚</td><td>v2.0 / 2026-09-30</td><td>1</td><td>—</td></tr>
+<tr><td>137505</td><td>AI-员工-平台架构</td><td>—</td><td>v3.0 / 2026-09-25</td><td>9</td><td class="ph">仅 AI 占位账号（AI负责人200），需项目集负责人补真人主创</td></tr>
+<tr><td>137510</td><td>AI员工-AIMV</td><td>曾磊</td><td>v3.0 / 2026-09-30</td><td>4</td><td>—</td></tr>
+<tr><td>137517</td><td>AI员工-充值和激励方案实现</td><td>—</td><td>v1.0 / 2026-08-31</td><td>2</td><td class="ph end">仅 AI 占位账号（AI负责人196），需项目集负责人补真人主创；最新版本已于 2026-08-31 结束（状态空），迁入后评估结项或开新版本</td></tr>
+<tr><td>137519</td><td>AI员工-基础运营工作</td><td>—</td><td>v2.0 / 2026-09-27</td><td>3</td><td class="ph">仅 AI 占位账号（AI负责人195），需项目集负责人补真人主创</td></tr>
+<tr><td>137525</td><td>AI 员工能力货架</td><td>陈洁</td><td>v2.0 / 2026-09-25</td><td>5</td><td>—</td></tr>
+<tr><td>137542</td><td>AI备课助手运营</td><td>方利梅</td><td>v1.0 / 2026-09-30</td><td>2</td><td>—</td></tr>
+</tbody>
+</table>
+</div></div></details>
+<details class="app"><summary>Open-Q　<span class="cnt">31 个执行型项目</span></summary><div class="treeblock"><h4>AI教育-产品规划（旧官网树 137181）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>AI教育-产品规划（137181）</b></div><div class="mi"><span>根项目主创</span><b>张彩霞</b></div><div class="mi"><span>中短期目标条数</span><b>36 条</b></div><div class="mi"><span>根项目最新版本</span><b>v2.0，截止 2026-09-26，阶段结项目标 5 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>167 个 / 14 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw tall">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>135364</td><td>Open-Q-网龙小学</td><td>华宁</td><td>v13.0 / 2026-09-25</td><td>3</td><td>—</td></tr>
+<tr><td>135460</td><td>Open-Q-中国版</td><td>褚泽彬</td><td>v24.0 / 2026-09-04</td><td>4</td><td>—</td></tr>
+<tr><td>136407</td><td>Open-Q-海外版</td><td>张彩霞</td><td>v19.0 / 2026-09-10</td><td>1</td><td>—</td></tr>
+<tr><td>137087</td><td>美术史APP</td><td>范敬萍</td><td>v9.0 / 2026-09-11</td><td>4</td><td>—</td></tr>
+<tr><td>137176</td><td>自控力APP（或小程序）</td><td>武坤芳</td><td>v1.0 / 2026-09-12</td><td>2</td><td>—</td></tr>
+<tr><td>137225</td><td>Open-Q-AI教师工坊</td><td>吴梦赢</td><td>v5.0 / 2026-09-04</td><td>5</td><td>—</td></tr>
+<tr><td>137303</td><td>Open-Q-多智能体平台</td><td>褚泽彬</td><td>v4.0 / 2026-09-06</td><td>6</td><td>理想化状态为空</td></tr>
+<tr><td>137374</td><td>智批-AI批改作业+学情反馈工具</td><td>朱钰茜</td><td>v3.0 / 2026-09-04</td><td>5</td><td>—</td></tr>
+<tr><td>137512</td><td>Open-Q-AI入口</td><td>—</td><td>v2.0 / 2026-09-16</td><td>4</td><td class="ph">仅 AI 占位账号（AI负责人198），需项目集负责人补真人主创</td></tr>
+<tr><td>137513</td><td>Open-Q-产品方案2.0</td><td>—</td><td>v2.0 / 2026-09-18</td><td>4</td><td class="ph">仅 AI 占位账号（AI负责人199），需项目集负责人补真人主创</td></tr>
+<tr><td>137516</td><td>Open-Q-AI历史文化鉴赏</td><td>林夏凯风</td><td>v1.0 / 2026-09-30</td><td>7</td><td>—</td></tr>
+<tr><td>137541</td><td>高职数字人课程-教学支持AI解决方案</td><td>陈达</td><td>v1.0 / 2026-09-17</td><td>3</td><td>—</td></tr>
+<tr><td>137550</td><td>Open-Q-AI 教学工坊</td><td>—</td><td>— / —</td><td>None</td><td class="ph end">仅 AI 占位账号（AI负责人188），需项目集负责人补真人主创；无版本/阶段目标；理想化状态为空</td></tr>
+<tr><td>137558</td><td>AI教育-K12 AI智慧课堂</td><td>—</td><td>— / —</td><td>None</td><td class="ph end">仅 AI 占位账号（AI负责人189），需项目集负责人补真人主创；无版本/阶段目标；理想化状态为空</td></tr>
+</tbody>
+</table>
+</div></div><div class="treeblock"><h4>Open-Quest academy（旧官网树 133064）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>Open-Quest academy（133064）</b></div><div class="mi"><span>根项目主创</span><b>金伟华</b></div><div class="mi"><span>中短期目标条数</span><b>269 条</b></div><div class="mi"><span>根项目最新版本</span><b>v2.0，截止 2026-09-30，阶段结项目标 0 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>66 个 / 7 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>135337</td><td>Open-Q专家委员会</td><td>夏建雄</td><td>v6.0 / 2026-09-25</td><td>1</td><td>—</td></tr>
+<tr><td>135969</td><td>Open-Q-VI</td><td>林立銮</td><td>v5.0 / 2026-12-26</td><td>0</td><td>最新版本无阶段结项目标；理想化状态为空</td></tr>
+<tr><td>136464</td><td>Open-Q基础运营</td><td>林立銮</td><td>v6.0 / 2026-09-30</td><td>6</td><td>—</td></tr>
+<tr><td>136546</td><td>Open-Q-商务合作-资源引入</td><td>罗昊南、饶蕾</td><td>v4.0 / 2026-09-30</td><td>3</td><td>—</td></tr>
+<tr><td>137012</td><td>蚂蚁帝国IP-商务合作</td><td>饶蕾</td><td>v5.0 / 2026-09-30</td><td>1</td><td>理想化状态为空</td></tr>
+<tr><td>137300</td><td>澳门科技大学-AI艺术与商业导论课程</td><td>林通、杨少梦</td><td>v3.0 / 2026-09-30</td><td>1</td><td>—</td></tr>
+<tr><td>137301</td><td>MANA生成式视觉艺术大师课</td><td>林通、杨少梦</td><td>v2.0 / 2026-09-30</td><td>1</td><td>—</td></tr>
+</tbody>
+</table>
+</div></div><div class="treeblock"><h4>Open-Q-内容（旧官网树 133970）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>Open-Q-内容（133970）</b></div><div class="mi"><span>根项目主创</span><b>卢贤明</b></div><div class="mi"><span>中短期目标条数</span><b>11 条</b></div><div class="mi"><span>根项目最新版本</span><b>v1.0，截止 2026-09-25，阶段结项目标 3 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>50 个 / 6 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>136506</td><td>Open-Q课程资源生产</td><td>余素珍</td><td>v8.0 / 2026-09-30</td><td>0</td><td>最新版本无阶段结项目标</td></tr>
+<tr><td>136507</td><td>脑科学课程合作与应用（薛教授）</td><td>夏建雄、武坤芳</td><td>v7.0 / 2026-08-31</td><td>1</td><td class="end">最新版本已于 2026-08-31 结束（待验收），迁入后评估结项或开新版本</td></tr>
+<tr><td>137009</td><td>任运讲一幅画的节目</td><td>余小兰</td><td>v5.0 / 2026-10-01</td><td>4</td><td>—</td></tr>
+<tr><td>137253</td><td>设计思维课程合作与应用(高院长）</td><td>武坤芳、夏建雄</td><td>v4.0 / 2026-09-03</td><td>3</td><td>理想化状态为空</td></tr>
+<tr><td>137257</td><td>积极心理学课程合作与应用(彭教授）</td><td>武坤芳、夏建雄</td><td>v3.0 / 2026-09-03</td><td>4</td><td>理想化状态为空</td></tr>
+<tr><td>137274</td><td>大学美育课程合作与应用(黄忠杰教授）</td><td>武坤芳</td><td>v4.0 / 2026-09-24</td><td>2</td><td>理想化状态为空</td></tr>
+</tbody>
+</table>
+</div></div><div class="treeblock"><h4>Open-Q-教育游戏（旧官网树 135917）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>Open-Q-教育游戏（135917）</b></div><div class="mi"><span>根项目主创</span><b>彭靖</b></div><div class="mi"><span>中短期目标条数</span><b>14 条</b></div><div class="mi"><span>根项目最新版本</span><b>v2.0，截止 2026-09-30，阶段结项目标 0 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>96 个 / 4 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>136640</td><td>北大尚教授合作-游戏化颗粒研发</td><td>王海丰</td><td>v11.0 / 2026-09-11</td><td>4</td><td>—</td></tr>
+<tr><td>137362</td><td>【AI-直播电商】课程研发</td><td>范敬萍</td><td>v3.0 / 2026-09-02</td><td>3</td><td>—</td></tr>
+<tr><td>137500</td><td>AI员工-教学专家库研发</td><td>彭靖</td><td>v2.0 / 2026-09-21</td><td>3</td><td>—</td></tr>
+<tr><td>137501</td><td>AI员工-编剧专家库研发</td><td>林晏召</td><td>v1.0 / 2026-09-16</td><td>4</td><td>—</td></tr>
+</tbody>
+</table>
+</div></div></details>
+<details class="app"><summary>AI生产环境　<span class="cnt">10 个执行型项目</span></summary><div class="treeblock"><h4>AI生产环境（旧官网树 137164）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>AI生产环境（137164）</b></div><div class="mi"><span>根项目主创</span><b>刘佳文</b></div><div class="mi"><span>中短期目标条数</span><b>7 条</b></div><div class="mi"><span>根项目最新版本</span><b>v3.0，截止 2026-09-26，阶段结项目标 5 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>19 个 / 6 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>136467</td><td>AI生产线-知识库搭建</td><td>黄世彪</td><td>v8.0 / 2026-08-30</td><td>7</td><td class="end">最新版本已于 2026-08-30 结束（目标未全部完成，版本延期继续执行），迁入后评估结项或开新版本</td></tr>
+<tr><td>136513</td><td>AI生产环境-生产管理AI化</td><td>—</td><td>v9.0 / 2026-09-30</td><td>5</td><td class="ph">已定主创为 溢鑫，待在「项目集管理」里补上。仅 AI 占位账号（【资源生产】管理AI化项目测试号），需项目集负责人补真人主创</td></tr>
+<tr><td>137204</td><td>AI需求工程</td><td>刘佳文</td><td>v8.0 / 2026-09-04</td><td>5</td><td>—</td></tr>
+<tr><td>137332</td><td>AI生产环境 - 教学大纲生成</td><td>高秀明</td><td>v2.0 / 2026-09-01</td><td>1</td><td class="end">最新版本已于 2026-09-01 结束（待验收），迁入后评估结项或开新版本</td></tr>
+<tr><td>137384</td><td>AI生产管理-AI生产线需求自动整理分析与执行</td><td>刘佳楠</td><td>v3.0 / 2026-09-18</td><td>4</td><td>—</td></tr>
+<tr><td>137521</td><td>AI生产环境-IP标准化生产研发</td><td>陈锐</td><td>v2.0 / 2026-09-22</td><td>6</td><td>—</td></tr>
+</tbody>
+</table>
+</div></div><div class="treeblock"><h4>AI表演3.0（旧官网树 132303）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>AI表演3.0（132303）</b></div><div class="mi"><span>根项目主创</span><b>纵婷</b></div><div class="mi"><span>中短期目标条数</span><b>37 条</b></div><div class="mi"><span>根项目最新版本</span><b>v4.0，截止 2026-09-30，阶段结项目标 7 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>167 个 / 4 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>137315</td><td>AI表演-表演解决方案研发的AI员工</td><td>吴梦赢</td><td>v4.0 / 2026-09-30</td><td>5</td><td>—</td></tr>
+<tr><td>137459</td><td>AI生产环境-表演形式-剧本改编的AI员工</td><td>任晓楠</td><td>v2.0 / 2026-08-27</td><td>3</td><td class="end">最新版本已于 2026-08-27 结束（待验收），迁入后评估结项或开新版本；理想化状态为空</td></tr>
+<tr><td>137481</td><td>AI表演-表演形式-生成板书动画的AI员工</td><td>吴梦赢</td><td>v4.0 / 2026-09-30</td><td>4</td><td>理想化状态为空</td></tr>
+<tr><td>137497</td><td>AI生产线-以讲名画为样例的美术史课件快速迭代</td><td>王雪滢</td><td>v2.0 / 2026-09-05</td><td>3</td><td>—</td></tr>
+</tbody>
+</table>
+</div></div></details>
+<details class="app"><summary>任运虚拟IP　<span class="cnt">11 个执行型项目</span></summary><div class="treeblock"><h4>任运虚拟IP（旧官网树 133942）</h4><div class="meta"><div class="mi"><span>根项目（上级项目）</span><b>任运虚拟IP（133942）</b></div><div class="mi"><span>根项目主创</span><b>屈琦</b></div><div class="mi"><span>中短期目标条数</span><b>57 条</b></div><div class="mi"><span>根项目最新版本</span><b>v7.0，截止 2026-09-25，阶段结项目标 8 条</b></div><div class="mi"><span>树内节点总数 / 本次迁入</span><b>108 个 / 11 个执行型项目（其余为预立项、已结项或类型不合规，按规则跳过）</b></div></div><div class="tw">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">真人主创</th><th scope="col">最新版本 / 截止</th><th scope="col">阶段结项目标数</th><th scope="col">需注意</th></tr></thead>
+<tbody>
+<tr><td>135208</td><td>运营与推广-抖音账号流量推广</td><td>屈琦</td><td>v9.0 / 2026-09-25</td><td>4</td><td>—</td></tr>
+<tr><td>135218</td><td>【子】任运形象-妆造（服装、妆容搭配等）</td><td>左启霖</td><td>v3.0 / 2026-08-15</td><td>0</td><td class="end">最新版本已于 2026-08-15 结束（状态空），迁入后评估结项或开新版本；最新版本无阶段结项目标</td></tr>
+<tr><td>135237</td><td>设定-任运的CI</td><td>刘林</td><td>v3.0 / 2026-09-30</td><td>2</td><td>理想化状态为空</td></tr>
+<tr><td>135279</td><td>任运IP礼品设计</td><td>陈岚</td><td>v6.0 / 2026-09-30</td><td>2</td><td>—</td></tr>
+<tr><td>135549</td><td>直播-直播间管理</td><td>陈卓丰</td><td>v7.0 / 2026-09-25</td><td>7</td><td>—</td></tr>
+<tr><td>135552</td><td>短视频-IP建设的运营短视频</td><td>邱惠琴</td><td>v4.0 / 2026-09-03</td><td>3</td><td>—</td></tr>
+<tr><td>135904</td><td>任运虚拟IP场景制作</td><td>郑烨</td><td>v9.0 / 2026-10-06</td><td>0</td><td>最新版本无阶段结项目标</td></tr>
+<tr><td>136383</td><td>僵小鱼IP运营</td><td>刘林</td><td>v7.0 / 2026-09-30</td><td>5</td><td>—</td></tr>
+<tr><td>136408</td><td>包子老师音乐学院</td><td>王雪滢</td><td>v6.0 / 2026-09-21</td><td>1</td><td>—</td></tr>
+<tr><td>136458</td><td>任运的歌曲库</td><td>郑毅铖</td><td>v12.0 / 2026-09-25</td><td>2</td><td>—</td></tr>
+<tr><td>137104</td><td>任运直播的AI管理和统筹</td><td>屈琦</td><td>v1.0 / 2026-09-28</td><td>2</td><td>—</td></tr>
+</tbody>
+</table>
+</div></div></details>
+<details class="app"><summary>其他项目树（本次不搬）　<span class="cnt">8 棵</span></summary><p class="note">以下 8 棵项目树不在本次五个项目集里，本次不搬。其中「DJ交办方振华的事务」（132272）项目组的安排是：列名单，9 月 15 日之后由主创申请后逐个搬，不必现在签字。</p><div class="tw">
+<table>
+<thead><tr><th scope="col">根项目编号</th><th scope="col">根项目名称</th><th scope="col">执行型项目数</th><th scope="col">执行型项目</th></tr></thead>
+<tbody>
+<tr><td>7162</td><td>北师大智慧学习研究院职能事务</td><td>2</td><td>学习环境智联计算关键技术研究及应用示范（134964，主创 李艳燕）；科技部项目-互联网教育应用的行为感知与风险监测关键技术研究（135001，主创 林春艳）</td></tr>
+<tr><td>131037</td><td>英魂之刃IP</td><td>3</td><td>英魂之刃（7021，主创 汪松）；英魂之刃SLG（126834，主创 蓝庆祥）；英魂之刃口袋版（海外）（128149，主创 陈星）</td></tr>
+<tr><td>135118</td><td>喵星人IP规划</td><td>3</td><td>长乐基地喵星人主题公园发散设计（135252，主创 陈苏宁）；喵星人-短视频运营（135863，主创 林立銮）；喵星人主题麦当劳餐厅设计（室内部分）（136471，主创 许松松）</td></tr>
+<tr><td>127482</td><td>中央美术学院-设计学院合作项目</td><td>1</td><td>2025-2026学年央美游戏设计课DJ授课（136906，主创 林通）</td></tr>
+<tr><td>132152</td><td>天诺</td><td>2</td><td>明星APP（7146，主创 吴斌彬）；星光乐园（133859，主创 郑毅铖）</td></tr>
+<tr><td>132272</td><td>DJ交办方振华的事务</td><td>2</td><td>网龙清华实验室（133652，主创 方振华）；AI声音方案库（136233，主创 方振华）</td></tr>
+<tr><td>133137</td><td>全球美育教育</td><td>2</td><td>任运的美术史（135269，主创 王雪滢）；任运的美术史-讲画家课程生产（137306，主创 冯猛）</td></tr>
+<tr><td>134020</td><td>虚拟主播</td><td>2</td><td>主播助手（132945，主创 郑毅铖）；虚拟主播unreal版本（133052，主创 葛岩、郑毅铖）</td></tr>
+</tbody>
+</table>
+</div></details>
+<details class="app"><summary>独立项目名单（没有上级项目，本次不搬）　<span class="cnt">154 个</span></summary><p class="note">以下 154 个项目在旧官网里不挂在任何项目树下（没有上级项目）。本次全部不搬。其中 69 个的项目类型符合迁移规则，9 月 15 日之后由主创提申请逐个搬；另外 85 个项目类型不符合迁移规则，不搬。</p><h4>可迁 —— 类型符合迁移规则，9/15 后按主创申请逐个搬（69 个）</h4><div class="tw tall">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">主创</th><th scope="col">最新版本 / 截止</th><th scope="col">中短期目标数</th><th scope="col">立项时间</th></tr></thead>
+<tbody>
+<tr><td>7143</td><td>多学销售</td><td>陈长飞</td><td>v3.0 / 2026-09-30</td><td>3</td><td>2014-03-01</td></tr>
+<tr><td>7152</td><td>雅域行政事务</td><td>林航</td><td>— / —</td><td>0</td><td>2020-10-15</td></tr>
+<tr><td>7196</td><td>算命</td><td>魏光前</td><td>v19.0 / 2026-09-30</td><td>17</td><td>2015-06-17</td></tr>
+<tr><td>7206</td><td>驰声语音API技术授权项目</td><td>林远东</td><td>— / —</td><td>0</td><td>—</td></tr>
+<tr><td>126823</td><td>福州市智慧教育（K12）</td><td>余俊</td><td>— / —</td><td>0</td><td>2019-02-27</td></tr>
+<tr><td>126843</td><td>幼儿园</td><td>林秋兰</td><td>— / —</td><td>0</td><td>2017-10-19</td></tr>
+<tr><td>133651</td><td>Open Art Lab</td><td>林通</td><td>v2.0 / 2026-09-30</td><td>0</td><td>2023-01-13</td></tr>
+<tr><td>126895</td><td>101教育PPT中国区（大陆）市场推广</td><td>方利梅</td><td>v8.0 / 2026-09-30</td><td>14</td><td>2018-02-01</td></tr>
+<tr><td>128499</td><td>玩学乐园</td><td>陈长杰、李亦言</td><td>v2.0 / 2026-09-30</td><td>24</td><td>2020-10-22</td></tr>
+<tr><td>128519</td><td>茂名教育人人通大数据平台</td><td>方利梅</td><td>v5.0 / 2026-09-30</td><td>4</td><td>2020-05-25</td></tr>
+<tr><td>129276</td><td>云启销售支持</td><td>宋旭星</td><td>v3.0 / 2026-09-30</td><td>3</td><td>2020-08-10</td></tr>
+<tr><td>130370</td><td>国家中小学智慧教育平台</td><td>房颖、毛竹楠</td><td>v15.0 / 2026-07-01</td><td>75</td><td>2020-12-27</td></tr>
+<tr><td>130675</td><td>网龙会议-直播服务（组件）</td><td>王跃杰</td><td>v2.0 / 2023-12-29</td><td>0</td><td>2021-01-17</td></tr>
+<tr><td>131288</td><td>VIP礼品项目</td><td>陈岚</td><td>v4.0 / 2026-09-30</td><td>3</td><td>2021-07-05</td></tr>
+<tr><td>131902</td><td>网彩体育院线（彩票）</td><td>童燕</td><td>— / —</td><td>0</td><td>2021-11-05</td></tr>
+<tr><td>131908</td><td>科创教育赛事</td><td>张健、任锟华</td><td>v2.0 / 2026-09-30</td><td>1</td><td>2021-11-11</td></tr>
+<tr><td>132089</td><td>国腾教育</td><td>侯天磊</td><td>— / —</td><td>0</td><td>2022-01-20</td></tr>
+<tr><td>134064</td><td>虚拟医生</td><td>方振华</td><td>v7.0 / 2026-04-10</td><td>7</td><td>2023-04-27</td></tr>
+<tr><td>132453</td><td>海外战略合作部职能事务</td><td>林凡</td><td>— / —</td><td>0</td><td>2022-04-25</td></tr>
+<tr><td>132779</td><td>小镇艺术家扶持计划</td><td>林通</td><td>v3.0 / 2026-09-30</td><td>6</td><td>2023-04-25</td></tr>
+<tr><td>133113</td><td>澳门科技大学合作</td><td>林通、杨少梦</td><td>v5.0 / 2026-09-25</td><td>8</td><td>2023-05-11</td></tr>
+<tr><td>133528</td><td>DJ教育学术建设</td><td>林凡、陈涵捷</td><td>v15.0 / 2026-09-26</td><td>8</td><td>2022-12-13</td></tr>
+<tr><td>134470</td><td>101卡拉ok</td><td>郑毅铖、方振华</td><td>v29.0 / 2026-09-18</td><td>14</td><td>2023-10-16</td></tr>
+<tr><td>134523</td><td>战略信息部职能事务</td><td>魏申</td><td>— / —</td><td>4</td><td>2023-07-17</td></tr>
+<tr><td>135106</td><td>振华大楼11层DJ办公室设计</td><td>陈苏宁</td><td>v3.0 / 2026-09-25</td><td>0</td><td>2023-10-11</td></tr>
+<tr><td>135195</td><td>VR编辑器K12科学教育方向销售</td><td>陈勇</td><td>— / —</td><td>0</td><td>2023-10-27</td></tr>
+<tr><td>132569</td><td>产教融合销售</td><td>康正清</td><td>— / —</td><td>14</td><td>2022-05-16</td></tr>
+<tr><td>135243</td><td>象雄电竞俱乐部</td><td>林通</td><td>— / —</td><td>0</td><td>2023-11-06</td></tr>
+<tr><td>135660</td><td>网龙对外传播渠道</td><td>刘诗诗</td><td>v5.0 / 2026-09-30</td><td>2</td><td>2024-02-27</td></tr>
+<tr><td>135689</td><td>福软到教育小镇的天桥设计</td><td>许松松</td><td>v3.0 / 2026-09-29</td><td>0</td><td>2024-03-07</td></tr>
+<tr><td>135818</td><td>AI通用能力研发</td><td>陈洁</td><td>v18.0 / 2026-09-14</td><td>4</td><td>2024-04-08</td></tr>
+<tr><td>136278</td><td>竹青林文旅项目</td><td>林通</td><td>— / —</td><td>0</td><td>2024-08-20</td></tr>
+<tr><td>136339</td><td>七点半学苑</td><td>方利梅</td><td>v9.0 / 2026-12-31</td><td>2</td><td>2024-10-15</td></tr>
+<tr><td>136456</td><td>专家系统应用研究与验证</td><td>王跃杰</td><td>v10.0 / 2026-09-25</td><td>15</td><td>2025-01-23</td></tr>
+<tr><td>136459</td><td>资源生产管理中心职能事务</td><td>卢贤明</td><td>— / —</td><td>0</td><td>2024-12-20</td></tr>
+<tr><td>136491</td><td>网龙交响乐团</td><td>王雪滢</td><td>v4.0 / 2026-09-25</td><td>8</td><td>2025-09-24</td></tr>
+<tr><td>136508</td><td>央美专家赋能AI生产线</td><td>武坤芳、葛岩</td><td>v7.0 / 2026-07-31</td><td>3</td><td>2025-03-16</td></tr>
+<tr><td>136539</td><td>卓越设计俱乐部运营</td><td>陈洁媛</td><td>v6.0 / 2026-09-30</td><td>12</td><td>2025-03-18</td></tr>
+<tr><td>136544</td><td>101域名迁移</td><td>程辉</td><td>v5.0 / 2026-09-30</td><td>4</td><td>2025-03-26</td></tr>
+<tr><td>136631</td><td>851研发楼设计</td><td>陈苏宁</td><td>v5.0 / 2026-09-25</td><td>0</td><td>2025-05-09</td></tr>
+<tr><td>136632</td><td>AI产学共创中心</td><td>郑烨</td><td>v5.0 / 2026-09-30</td><td>7</td><td>2025-05-09</td></tr>
+<tr><td>136679</td><td>185亩地块规划设计</td><td>许松松</td><td>v5.0 / 2026-09-25</td><td>0</td><td>2025-06-06</td></tr>
+<tr><td>136766</td><td>黄老师美术史之荷兰国家博物馆收藏清代福州城图的AR课件</td><td>方振华</td><td>v10.0 / 2026-09-30</td><td>3</td><td>2025-07-01</td></tr>
+<tr><td>137041</td><td>DJ工作事务</td><td>王雪滢</td><td>v4.0 / 2026-09-14</td><td>4</td><td>2025-11-14</td></tr>
+<tr><td>137063</td><td>职业培训对外合作</td><td>林通</td><td>v4.0 / 2026-09-30</td><td>2</td><td>2025-09-22</td></tr>
+<tr><td>137161</td><td>数字文旅分会</td><td>王旭</td><td>v4.0 / 2026-09-25</td><td>3</td><td>2025-11-10</td></tr>
+<tr><td>137167</td><td>世界现代艺术史中的宝藏艺术家研究（冷门艺术家）</td><td>陈岚</td><td>v5.0 / 2026-09-30</td><td>1</td><td>2025-11-12</td></tr>
+<tr><td>137168</td><td>星纪园体适能场地规划设计</td><td>杨玉洁</td><td>v4.0 / 2026-09-30</td><td>0</td><td>2025-11-12</td></tr>
+<tr><td>137215</td><td>ND市值管理</td><td>石林</td><td>v3.0 / 2026-09-30</td><td>1</td><td>2025-12-11</td></tr>
+<tr><td>137221</td><td>AI Coding-Testing</td><td>陈洁</td><td>v5.0 / 2026-09-30</td><td>8</td><td>2025-12-23</td></tr>
+<tr><td>137222</td><td>世界近代艺术史上的共产主义画家研究</td><td>方振华</td><td>v4.0 / 2026-09-03</td><td>1</td><td>2025-12-24</td></tr>
+<tr><td>137246</td><td>UE引擎升级-5.7版本</td><td>江俊杰</td><td>v6.0 / 2026-09-25</td><td>2</td><td>2026-01-13</td></tr>
+<tr><td>137247</td><td>AI编程复刻大游戏</td><td>方振华</td><td>v4.0 / 2026-09-01</td><td>16</td><td>2026-01-21</td></tr>
+<tr><td>137282</td><td>教育小镇体育馆建筑设计</td><td>许松松</td><td>v2.0 / 2026-09-23</td><td>0</td><td>2026-03-25</td></tr>
+<tr><td>137288</td><td>泰和雅域后勤ai项目</td><td>林亨敏</td><td>v2.0 / 2026-07-01</td><td>1</td><td>2026-04-10</td></tr>
+<tr><td>137302</td><td>全球智慧教育大会2026</td><td>张定文</td><td>v2.0 / 2026-09-25</td><td>0</td><td>2026-04-01</td></tr>
+<tr><td>137330</td><td>造型艺术学习与创作实践</td><td>林通</td><td>v3.0 / 2026-09-26</td><td>4</td><td>2026-04-17</td></tr>
+<tr><td>137372</td><td>AI改编游戏</td><td>陈锐</td><td>v3.0 / 2026-09-18</td><td>2</td><td>2026-05-13</td></tr>
+<tr><td>137498</td><td>星纪园学校北区大门岗亭优化改造设计</td><td>杨玉洁</td><td>v1.0 / 2026-09-30</td><td>0</td><td>2026-06-26</td></tr>
+<tr><td>137509</td><td>AI员工-福建省学生AI创新文化实训</td><td>郑毅铖</td><td>v2.0 / 2026-12-26</td><td>2</td><td>2026-07-01</td></tr>
+<tr><td>137523</td><td>DJ画作雕塑品设计制作</td><td>陈苏宁</td><td>v1.0 / 2026-10-03</td><td>0</td><td>2026-07-16</td></tr>
+<tr><td>137524</td><td>推动DJ成为联合国教科文组织人工智能与教育教席联席主持人</td><td>许霖</td><td>— / —</td><td>0</td><td>2026-07-16</td></tr>
+<tr><td>137526</td><td>实验互动表现模式研发与批量化应用</td><td>黄振辉</td><td>v2.0 / 2026-09-29</td><td>4</td><td>2026-07-18</td></tr>
+<tr><td>137531</td><td>AI拼豆全链路创新项目</td><td>柳彦</td><td>v2.0 / 2026-09-26</td><td>13</td><td>2026-08-12</td></tr>
+<tr><td>137536</td><td>呐喊的蚂蚁乐高雕塑-香港美协展落地</td><td>李亦言</td><td>v1.0 / 2026-10-15</td><td>33</td><td>2026-08-03</td></tr>
+<tr><td>137539</td><td>中国美术家协会数字美术馆建设</td><td>林通</td><td>v1.0 / 2026-09-30</td><td>0</td><td>2026-08-26</td></tr>
+<tr><td>137543</td><td>元卓AI产品渠道运营与内容资源接入项目</td><td>陈虹宇</td><td>v1.0 / 2026-09-30</td><td>3</td><td>2026-08-13</td></tr>
+<tr><td>137548</td><td>实训楼设计</td><td>许松松</td><td>v2.0 / 2026-12-26</td><td>0</td><td>2026-08-20</td></tr>
+<tr><td>137554</td><td>AISLI智慧教育科研智能体</td><td>陈虹宇</td><td>— / —</td><td>0</td><td>2026-08-26</td></tr>
+</tbody>
+</table>
+</div><h4>不迁 —— 项目类型不符合迁移规则（85 个）</h4><div class="tw tall">
+<table>
+<thead><tr><th scope="col">编号</th><th scope="col">项目名称</th><th scope="col">主创</th><th scope="col">最新版本 / 截止</th><th scope="col">中短期目标数</th><th scope="col">立项时间</th></tr></thead>
+<tbody>
+<tr><td>6936</td><td>简体征服</td><td>郑捷、汪松</td><td>— / —</td><td>0</td><td>2002-01-10</td></tr>
+<tr><td>6938</td><td>简体魔域</td><td>汪松</td><td>— / —</td><td>0</td><td>2004-12-03</td></tr>
+<tr><td>6939</td><td>简体机战</td><td>俞鸿</td><td>— / —</td><td>0</td><td>2004-01-01</td></tr>
+<tr><td>6940</td><td>简体99.com</td><td>王文清</td><td>— / —</td><td>0</td><td>—</td></tr>
+<tr><td>6941</td><td>增值业务职能事务</td><td>林艳芬、陈丹</td><td>— / —</td><td>0</td><td>1970-01-01</td></tr>
+<tr><td>6942</td><td>英文征服</td><td>郑捷、陈星、汪松</td><td>— / —</td><td>0</td><td>2003-04-21</td></tr>
+<tr><td>6945</td><td>西班牙征服</td><td>郑捷、陈星、汪松</td><td>— / —</td><td>0</td><td>2005-08-01</td></tr>
+<tr><td>6950</td><td>英文魔域</td><td>汪松</td><td>— / —</td><td>0</td><td>2006-06-01</td></tr>
+<tr><td>6970</td><td>任务待命</td><td>—</td><td>— / —</td><td>0</td><td>2023-04-10</td></tr>
+<tr><td>6972</td><td>游戏客服职能事务</td><td>颜欢欢</td><td>— / —</td><td>0</td><td>—</td></tr>
+<tr><td>6974</td><td>虎豹骑</td><td>俞鸿、陈宏展</td><td>— / —</td><td>0</td><td>2012-10-26</td></tr>
+<tr><td>6980</td><td>阿拉伯语征服</td><td>郑捷、陈星、汪松</td><td>— / —</td><td>0</td><td>2009-03-03</td></tr>
+<tr><td>7032</td><td>移动端征服</td><td>郑捷、陈星、汪松</td><td>— / —</td><td>0</td><td>2011-05-10</td></tr>
+<tr><td>7068</td><td>福州软件职业技术学院</td><td>俞飚、李晋</td><td>— / —</td><td>15</td><td>—</td></tr>
+<tr><td>7076</td><td>手机版魔域</td><td>汪松</td><td>— / —</td><td>0</td><td>2013-11-30</td></tr>
+<tr><td>7087</td><td>人力资源事务</td><td>林仲东</td><td>— / —</td><td>0</td><td>2021-04-06</td></tr>
+<tr><td>7090</td><td>泰和行政事务</td><td>林航</td><td>— / —</td><td>0</td><td>2023-04-10</td></tr>
+<tr><td>7093</td><td>投资者关系部职能事务</td><td>周鹰</td><td>— / —</td><td>0</td><td>2023-04-10</td></tr>
+<tr><td>7094</td><td>工程部职能事务</td><td>崔学鹏</td><td>— / —</td><td>0</td><td>2023-04-10</td></tr>
+<tr><td>7097</td><td>公司事务</td><td>刘德建</td><td>— / —</td><td>0</td><td>1970-01-01</td></tr>
+<tr><td>7216</td><td>唐世物业</td><td>林常青</td><td>— / —</td><td>0</td><td>2016-01-01</td></tr>
+<tr><td>8577</td><td>游戏程序专网源码管理</td><td>李静</td><td>— / —</td><td>0</td><td>1970-01-01</td></tr>
+<tr><td>121224</td><td>中国教育高端协作</td><td>俞飚</td><td>— / —</td><td>0</td><td>—</td></tr>
+<tr><td>126763</td><td>普天职业教育</td><td>张庆安</td><td>— / —</td><td>0</td><td>2017-03-01</td></tr>
+<tr><td>126776</td><td>魔域手游2</td><td>汪松</td><td>— / —</td><td>0</td><td>2017-03-21</td></tr>
+<tr><td>126806</td><td>网龙小学</td><td>李丹梅、陈秀娟</td><td>— / —</td><td>0</td><td>2017-06-30</td></tr>
+<tr><td>126926</td><td>西南VR智慧教育与智慧旅游</td><td>贾文汇</td><td>— / —</td><td>0</td><td>2018-04-04</td></tr>
+<tr><td>126933</td><td>魔域传说</td><td>沈之佳</td><td>— / —</td><td>0</td><td>2018-04-18</td></tr>
+<tr><td>126948</td><td>项目管理与审计部（非游）职能事务</td><td>唐胜</td><td>— / —</td><td>0</td><td>2018-05-11</td></tr>
+<tr><td>127445</td><td>工程院职能事务</td><td>陈宏</td><td>— / —</td><td>0</td><td>—</td></tr>
+<tr><td>127483</td><td>华中师范大学教育信息化发展研究中心职能事务</td><td>吴砥</td><td>— / —</td><td>0</td><td>2019-06-04</td></tr>
+<tr><td>127750</td><td>消除计划 </td><td>Helen Li</td><td>— / —</td><td>3</td><td>2019-11-13</td></tr>
+<tr><td>128162</td><td>党委职能事务</td><td>兰瑞军、郑辉</td><td>— / —</td><td>0</td><td>2020-04-03</td></tr>
+<tr><td>130138</td><td>三人会事务</td><td>金伟华</td><td>— / —</td><td>0</td><td>2020-11-11</td></tr>
+<tr><td>130381</td><td>产品营销与运营中心营销管理组</td><td>卢贤明</td><td>— / —</td><td>0</td><td>2020-12-15</td></tr>
+<tr><td>130421</td><td>掌沃公司事务</td><td>张涛</td><td>— / —</td><td>0</td><td>2020-12-24</td></tr>
+<tr><td>131201</td><td>信息安全部职能事务</td><td>韦铭</td><td>— / —</td><td>0</td><td>2021-03-10</td></tr>
+<tr><td>131687</td><td>天亮行政事务</td><td>林航</td><td>— / —</td><td>0</td><td>2021-09-18</td></tr>
+<tr><td>131691</td><td>高管支持组职能事务</td><td>唐钰</td><td>— / —</td><td>0</td><td>2021-09-24</td></tr>
+<tr><td>132018</td><td>工会职能事务</td><td>林芸</td><td>— / —</td><td>0</td><td>2021-12-17</td></tr>
+<tr><td>132046</td><td>市场运营中心职能事务</td><td>陆启頔</td><td>— / —</td><td>0</td><td>2021-12-23</td></tr>
+<tr><td>132145</td><td>游戏管理支持部职能事务</td><td>王柟</td><td>— / —</td><td>0</td><td>2022-02-06</td></tr>
+<tr><td>132909</td><td>历史订单追款</td><td>赵云鹏</td><td>v3.0 / 2026-09-30</td><td>1</td><td>2022-07-05</td></tr>
+<tr><td>132961</td><td>项目名称1</td><td>唐龙杰</td><td>— / —</td><td>0</td><td>2022-07-25</td></tr>
+<tr><td>132964</td><td>魔域口袋版2.0</td><td>汪松</td><td>— / —</td><td>0</td><td>2022-07-26</td></tr>
+<tr><td>133133</td><td>智能NPC-游戏</td><td>杨超</td><td>— / —</td><td>0</td><td>2022-10-14</td></tr>
+<tr><td>133405</td><td>游戏业务接待</td><td>汪松</td><td>— / —</td><td>0</td><td>2022-11-22</td></tr>
+<tr><td>133838</td><td>BKTO黑番茄</td><td>黄亮</td><td>— / —</td><td>0</td><td>2023-03-10</td></tr>
+<tr><td>134124</td><td>U3D海外征服休闲游戏</td><td>郑捷</td><td>— / —</td><td>0</td><td>2023-11-24</td></tr>
+<tr><td>134306</td><td>人员外包</td><td>余乐</td><td>— / —</td><td>0</td><td>2023-06-30</td></tr>
+<tr><td>135193</td><td>游戏生命周期管理</td><td>林琛</td><td>— / —</td><td>0</td><td>2023-10-26</td></tr>
+<tr><td>135464</td><td>首席设计师职能项目</td><td>林嘉泉</td><td>— / —</td><td>0</td><td>2024-01-08</td></tr>
+<tr><td>135673</td><td>UE引擎下策划管线建立</td><td>朱嘉</td><td>— / —</td><td>0</td><td>2024-03-01</td></tr>
+<tr><td>135690</td><td>财务中心职能事务</td><td>石林</td><td>— / —</td><td>6</td><td>2024-03-07</td></tr>
+<tr><td>135698</td><td>网龙高中</td><td>吕卫平</td><td>— / —</td><td>0</td><td>2024-03-13</td></tr>
+<tr><td>135699</td><td>网龙初中</td><td>程剑书</td><td>— / —</td><td>0</td><td>2024-03-13</td></tr>
+<tr><td>135948</td><td>教育公共运维项目</td><td>宋全程</td><td>— / —</td><td>0</td><td>2024-05-21</td></tr>
+<tr><td>136440</td><td>人工智能支援中心</td><td>魏申</td><td>— / —</td><td>0</td><td>2024-11-29</td></tr>
+<tr><td>136480</td><td>策划中心职能事务</td><td>林琛</td><td>— / —</td><td>0</td><td>2025-01-16</td></tr>
+<tr><td>136481</td><td>美术中心职能事务</td><td>沈烽亮</td><td>— / —</td><td>0</td><td>2025-01-16</td></tr>
+<tr><td>136482</td><td>游戏QA部职能事务</td><td>林琛、游友旗</td><td>— / —</td><td>0</td><td>2025-01-16</td></tr>
+<tr><td>136484</td><td>程序中心职能事务</td><td>李佳</td><td>— / —</td><td>0</td><td>2025-01-16</td></tr>
+<tr><td>136596</td><td>美国网龙公司</td><td>刘明</td><td>— / —</td><td>0</td><td>2025-04-17</td></tr>
+<tr><td>136639</td><td>AI型组织</td><td>林琛</td><td>— / —</td><td>0</td><td>2025-05-13</td></tr>
+<tr><td>136676</td><td>增长策略</td><td>孙刚</td><td>— / —</td><td>0</td><td>2025-06-04</td></tr>
+<tr><td>136726</td><td>市场与用户研究中心职能事务</td><td>林佳</td><td>— / —</td><td>0</td><td>2025-06-12</td></tr>
+<tr><td>136791</td><td>概念设计管线搭建</td><td>商伟光</td><td>— / —</td><td>0</td><td>2025-07-08</td></tr>
+<tr><td>136795</td><td>美术中心AI生产</td><td>沈烽亮</td><td>— / —</td><td>0</td><td>2025-07-10</td></tr>
+<tr><td>136838</td><td>人力资源部（HRBP）游戏职能事务</td><td>黄凌</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>136839</td><td>设计中心职能事务</td><td>唐三</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>136840</td><td>游戏业务部门管理</td><td>游戏业务管理委员会</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>136841</td><td>政府关系与合规管理部职能事务</td><td>吴冬华</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>136842</td><td>人力资源部（总部）职能事务</td><td>林仲东</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>136843</td><td>总办本部职能事务</td><td>刘德建</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>136845</td><td>外包部（非游）职能事务</td><td>余乐</td><td>— / —</td><td>0</td><td>2025-07-30</td></tr>
+<tr><td>137093</td><td>网龙社区APP</td><td>黄彬菁</td><td>— / —</td><td>0</td><td>2025-10-21</td></tr>
+<tr><td>137198</td><td>人力资源部（HRBP）职能事务</td><td>黄凌</td><td>— / —</td><td>0</td><td>2025-11-28</td></tr>
+<tr><td>137209</td><td>天朗行政事务</td><td>方振华</td><td>— / —</td><td>0</td><td>2025-12-08</td></tr>
+<tr><td>137229</td><td>策划中心AI生产</td><td>林琛</td><td>— / —</td><td>0</td><td>2025-12-31</td></tr>
+<tr><td>137230</td><td>程序中心AI生产</td><td>李佳</td><td>— / —</td><td>0</td><td>2025-12-31</td></tr>
+<tr><td>137272</td><td>AI员工-游戏</td><td>李佳</td><td>— / —</td><td>0</td><td>2026-03-09</td></tr>
+<tr><td>137275</td><td>数字生命教育研究部职能事务</td><td>宓雄</td><td>— / —</td><td>0</td><td>2026-03-13</td></tr>
+<tr><td>137317</td><td>AI肉鸽</td><td>杨超</td><td>— / —</td><td>0</td><td>2026-04-10</td></tr>
+<tr><td>137336</td><td>福州市天澜教育科技有限公司</td><td>林伟</td><td>— / —</td><td>0</td><td>2026-04-25</td></tr>
+<tr><td>137518</td><td>游戏外包部职能事务</td><td>林琛</td><td>— / —</td><td>0</td><td>2026-07-13</td></tr>
+</tbody>
+</table>
+</div></details>
+</section>
+<section class="panel" id="p-howto" role="tabpanel" aria-labelledby="t-howto" tabindex="0" hidden><div class="panelhead"><p>新官网怎么用：从登录到把一件事做完验收，按页面一步步走。</p><button class="printbtn" type="button" data-print="howto">仅打印本页</button></div>
+<p class="lead">下面加了「」的都是新官网上真实的菜单名、页签名或按钮名，照着找就行。整套走一遍大约 15 分钟：从登录，到把一条事务领走、做完、提交、被验收。</p>
+<h2>一、登录与个人工作台</h2><p class="lead">用公司统一账号登录新官网（ai-native-pm-platform.ndhy.com）。登录后默认落在<b class="ui">「管理工作台」</b>的<b class="ui">「项目总览」</b>。</p><ol class="steps"><li><div class="st"><b>左上角切换工作台。</b><p>新官网有四个工作台：<b class="ui">「管理工作台」</b>（全公司视角）、<b class="ui">「战略工作台」</b>、<b class="ui">「个人工作台」</b>（你自己的待办）、进入某个项目后是<b class="ui">「项目工作台」</b>。日常最常去的是<b class="ui">「个人工作台」</b>。</p></div></li><li><div class="st"><b><b class="ui">「个人工作台」</b>的六个菜单。</b><p><b class="ui">「个人主页」</b>（今天有什么卡在你这）、<b class="ui">「等我决策」</b>（所有等你拍板的单据和卡片）、<b class="ui">「我的事务」</b>（你要做的具体活）、<b class="ui">「我承接的目标」</b>、<b class="ui">「通知与消息」</b>、<b class="ui">「我提出的需求」</b>。</p></div></li><li><div class="st"><b>先看<b class="ui">「个人主页」</b>。</b><p>上面有一块叫<b class="ui">「AI运行出现卡点，等我决策」</b>，以及<b class="ui">「本周贡献」</b><b class="ui">「我的项目」</b><b class="ui">「最近访问的项目」</b>。如果这块是空的，说明现在没有事等你。</p></div></li></ol>
+<h2>二、处理确认单与介入卡（「等我决策」）</h2><p class="lead">迁移期间你收到的所有单据都在<b class="ui">「个人工作台」</b>→<b class="ui">「等我决策」</b>里。上面有分类页签：<b class="ui">「全部」</b><b class="ui">「立项定夺」</b><b class="ui">「审核卡点」</b><b class="ui">「方案拍板」</b><b class="ui">「终止确认」</b><b class="ui">「外部 AI 裁处」</b><b class="ui">「需求澄清」</b>。</p><ol class="steps"><li><div class="st"><b><b class="ui">「中短期目标时间周期确认」</b>——发给母项目主创。</b><p>点开后上半部分是<b class="ui">「这一版的时间周期」</b>，列出项目、版本、起始日、验收日、时长、本版目标数。下半部分可以改<b class="ui">「起始日」</b>和<b class="ui">「时长」</b>；<b class="ui">「验收日」</b>按每月 30 天自动算出来，不用自己填。确认之后，系统会给每一条还没人承接的中短期目标各发一张<b class="ui">「承接指定」</b>。</p></div></li><li><div class="st"><b><b class="ui">「承接指定」</b>——发给母项目主创，一条目标一张。</b><p>上半部分<b class="ui">「要找人承接的中短期目标」</b>告诉你是哪条目标；下半部分<b class="ui">「指定由哪个执行型项目承接」</b>列出候选项目，系统算出来的会打上<b class="ui">「AI 推荐」</b>标签，没命中的写<b class="ui">「未命中章程边界」</b>。选一个，提交。页面上的提示写得很清楚：选定后，该项目的每位主创都会收到<b class="ui">「承接确认」</b>，全部接受才生效。如果上次指定被拒绝，卡片顶部会有一块<b class="ui">「上一次指定被拒绝」</b>，写明是谁拒的、理由是什么。</p></div></li><li><div class="st"><b><b class="ui">「承接确认」</b>——发给执行型项目的每一位主创。</b><p>接受即表示你的项目愿意承接这条中短期目标。只要有一个人拒绝，整张单据退回母项目主创重新指定。</p></div></li><li><div class="st"><b><b class="ui">「阶段结项目标时间周期确认」</b>——发给执行型项目主创。</b><p>上半部分会同时显示<b class="ui">「母项目」</b>和<b class="ui">「母项目的时间周期」</b>，让你知道边界在哪；下半部分<b class="ui">「确认这段时间周期」</b>里填起始日和验收日，页面提示是：可以调整，但必须落在母项目中短期目标的时间周期之内。填好点<b class="ui">「确认时间周期」</b>。</p></div></li><li><div class="st"><b>介入卡。</b><p>AI 跑到一半需要人拿主意时会发卡片给你。在<b class="ui">「等我决策」</b>里显示为<b class="ui">「介入卡」</b>；进入某个项目后，在项目里的<b class="ui">「人工介入」</b>页面顶上叫<b class="ui">「AI 发给你的介入卡」</b>。卡片上可以<b class="ui">「认领」</b>（表示这张卡归你处理）、<b class="ui">「提交意见」</b>、或者<b class="ui">「转交」</b>给别人。</p></div></li></ol>
+<h2>三、「项目主页」与目标树</h2><p class="lead">从<b class="ui">「个人主页」</b>的<b class="ui">「我的项目」</b>或者搜索进入某个项目，第一页就是<b class="ui">「项目主页」</b>。</p><ol class="steps"><li><div class="st"><b>在<b class="ui">「项目主页」</b>核对档案。</b><p>理想化状态、目标用户、核心价值这些都在这一页。迁移后请对着旧官网核一遍。</p></div></li><li><div class="st"><b>用版本下拉切换版本。</b><p>母项目上是<b class="ui">「中短期目标版本」</b>，执行型项目上是<b class="ui">「阶段结项目标版本」</b>。迁移只带最新一个版本过来，所以下拉里通常只有一项。</p></div></li><li><div class="st"><b>看目标树。</b><p>执行型项目的左侧菜单里叫<b class="ui">「目标树」</b>；母项目里叫<b class="ui">「目标与项目关系图」</b>，能看到这条中短期目标下面挂了哪些执行型项目。</p></div></li><li><div class="st"><b>母项目只到中短期目标为止。</b><p>母项目页面上会有一句提示：母项目止于中短期，其执行由下方<b class="ui">「子项目」</b>承载。所以阶段结项目标要到执行型项目里去看。</p></div></li></ol>
+<h2>四、给执行型项目指定它承接的中期目标</h2><p class="lead">这是迁移里最容易漏的一步。旧官网上执行型项目的目标挂的是它自己的中短期目标，没有一条挂到母项目上；所以搬过来之后，必须由母项目主创逐个把执行型项目接到某条中期目标上。</p><ol class="steps"><li><div class="st"><b>找到选择项<b class="ui">「承接的中期目标」</b>。</b><p>新官网上，处理母项目归属类卡片时，表单里有三个必填项：<b class="ui">「归属既有母项目」</b><b class="ui">「承接的中期目标」</b><b class="ui">「子项目所属领域」</b>。页面提示是：归属既有母项目时，还要选择承接的中期目标和子项目领域；系统会校验三项是否属于同一个母项目。</p></div></li><li><div class="st"><b>每次重新搬入之后都要重做一次。</b><p>系统每搬一次旧官网数据就会覆盖一遍，这个关系不会自动保留。AI项目官网项目组每次搬完会通知母项目主创重做。</p></div></li><li><div class="st"><b>注意：新官网上没有叫<b class="ui">「结构管理」</b>的页面。</b><p>如果你在菜单里找不到它，不是你的问题。本次窗口的确切入口以AI项目官网项目组通知为准。</p></div></li></ol>
+<h2>五、「项目集管理」：给项目补真人主创</h2><p class="lead">位置：<b class="ui">「管理工作台」</b>→ 治理 → <b class="ui">「项目集管理」</b>。这一页由项目集负责人或平台管理员用。</p><ol class="steps"><li><div class="st"><b>进入你的项目集。</b><p>详情里有几个页签：<b class="ui">「在跑项目」</b><b class="ui">「候选」</b><b class="ui">「成员」</b>。</p></div></li><li><div class="st"><b>在<b class="ui">「主创席位」</b>里加人。</b><p>旧官网里主创只是 AI 占位账号的项目，搬过来后这里是空的或只有 AI 号，必须补上真人。系统之后就按这里维护的人发单据。</p></div></li><li><div class="st"><b><b class="ui">「团队成员」</b>和<b class="ui">「主创」</b>不是一回事。</b><p>主创是拿决策和收单据的人；成员是项目里可以被派活、被转交事务的人。</p></div></li></ol>
+<h2>六、事务：领取、处理、提交、验收</h2><p class="lead">阶段周期确认完之后，系统每 10 分钟扫一轮，由 AI 员工把当前阶段结项目标拆成一条条事务。拆出来的事务，个人在<b class="ui">「个人工作台」</b>→<b class="ui">「我的事务」</b>里看，项目层面在项目里的<b class="ui">「执行事务池」</b>里看。</p><ol class="steps"><li><div class="st"><b><b class="ui">「我的事务」</b>有四个分组页签。</b><p><b class="ui">「待处理」</b>（还没人领的）、<b class="ui">「我的在手」</b>（你已经领了的）、<b class="ui">「待我验收」</b>（等你验收别人做完的）、<b class="ui">「已结束」</b>。</p></div></li><li><div class="st"><b>领。</b><p>在<b class="ui">「待处理」</b>里点<b class="ui">「领取事务」</b>，这条事务就归你了。如果这条事务是 AI 先做了一部分交给你，旁边会有<b class="ui">「看 AI 产出」</b>；有疑问可以点<b class="ui">「协商」</b>。</p></div></li><li><div class="st"><b>做。</b><p>点<b class="ui">「去处理」</b>回填进展和结果。也可以点<b class="ui">「转交」</b>交给项目里的另一位成员（页面说明：仅展示当前项目成员；当前只允许事务持有人转交），或者点<b class="ui">「转交他人」</b><b class="ui">「派发他人」</b>。</p></div></li><li><div class="st"><b>提交。</b><p>回填时选一个结果：<b class="ui">「已完成」</b><b class="ui">「已延期」</b><b class="ui">「未完成」</b>，可以附文件和链接。申请延期后，在项目侧确认之前，原来的截止时间仍然有效。</p></div></li><li><div class="st"><b>初验。</b><p>提交之后状态变成<b class="ui">「Pi 初验中」</b>——Pi 是平台里 AI 验收官的名字，意思是 AI 正在做第一道验收。</p></div></li><li><div class="st"><b>终验。</b><p>初验通过后交目标负责人终验。初验没过，可以<b class="ui">「返工一次」</b>（做完重新交 AI 初验），也可以<b class="ui">「直接申请目标负责人终验」</b>，由人来拍板。</p></div></li><li><div class="st"><b>看得懂状态。</b><p>事务状态一共九种：<b class="ui">「等待前置」</b><b class="ui">「待处理」</b><b class="ui">「进行中」</b><b class="ui">「待人工查验」</b><b class="ui">「需修改」</b><b class="ui">「验收断点」</b><b class="ui">「已完成」</b><b class="ui">「失败收口」</b><b class="ui">「已终止」</b>。<b class="ui">「验收断点」</b>的意思是验收卡住了、需要人介入，不是失败。</p></div></li><li><div class="st"><b>在项目里做验收。</b><p>进入项目 →<b class="ui">「验收与闭环」</b>，里面有四个视图：<b class="ui">「周进度汇总」</b><b class="ui">「阶段 / 中短期汇聚」</b><b class="ui">「进度推进度」</b><b class="ui">「验收复盘」</b>。目标层面的验收记录在这里看。</p></div></li></ol>
+<h2>七、AI 事务标记是什么意思</h2><p class="lead">每条事务上都有一个标记，告诉你这件事谁来做。</p><ol class="steps"><li><div class="st"><b><b class="ui">「AI 全程」</b>。</b><p>AI 从头做到尾，系统自动派发执行，做完由 AI 验收官初验。你只要在结果不对时介入。</p></div></li><li><div class="st"><b><b class="ui">「人机协作」</b>。</b><p>AI 做一部分，剩下的交给人。AI 那部分做完会在你的事务上出现<b class="ui">「看 AI 产出」</b>。</p></div></li><li><div class="st"><b><b class="ui">「人执行」</b>。</b><p>必须人做，AI 只帮忙拆事务和记录。</p></div></li><li><div class="st"><b>另一套写法：能力等级。</b><p>有些地方写的是<b class="ui">「AI 可自主完成」</b><b class="ui">「人机协作」</b><b class="ui">「需人执行」</b>，是同一件事的另一种说法。</p></div></li><li><div class="st"><b>费用。</b><p>AI 执行会产生费用，按项目记录。进入项目后在<b class="ui">「项目费用看板」</b>看本项目的花费，全公司的在<b class="ui">「管理工作台」</b>的<b class="ui">「算力总看板」</b>。</p></div></li></ol>
+<h2>八、常见问题</h2><div class="faq"><div class="q"><b>我没收到<b class="ui">「阶段结项目标时间周期确认」</b>，是不是漏了我？</b><p>不是。只有被母项目主创指定去承接某条中短期目标的执行型项目，才会收到这张单据。没有被指定的项目不会收到，AI 也不会给它拆事务。请找你的母项目主创。</p></div><div class="q"><b>周期已经确认了，为什么还没拆出事务？</b><p>两种可能：一是确认还没满 10 分钟——系统每 10 分钟扫一轮；二是 AI 拆到一半需要你补充事实，发了<b class="ui">「需求澄清」</b>或介入卡在<b class="ui">「等我决策」</b>里等你回答，回答完才会继续。</p></div><div class="q"><b>为什么我的子项目一下子少了很多？</b><p>旧官网的项目树里夹着大量预立项、已结项、或者类型不符合迁移规则的节点，这些不搬；它们下面的子项目会直接挂到最近一个合规的上级项目下。所以你会看到层级被拍平、节点变少。每棵树 85%–95% 的节点属于这种情况。旧官网的原始数据仍在，没有丢。</p></div><div class="q"><b>主创一栏写<b class="ui">「—」</b>，是什么意思？</b><p>说明这个项目在旧官网里只挂了 AI 占位账号（名字像<b class="ui">「AI负责人」</b><b class="ui">「××项目测试号」</b>），没有真人主创。需要项目集负责人在<b class="ui">「项目集管理」</b>里补真人主创，系统才知道单据发给谁。</p></div><div class="q"><b><b class="ui">「Pi 初验中」</b>是什么意思？</b><p>Pi 是平台里 AI 验收官的名字。这个状态表示你提交的结果正在被 AI 做第一道验收，还没到人这一关。</p></div><div class="q"><b>提交时选<b class="ui">「已延期」</b>和<b class="ui">「未完成」</b>有什么区别？</b><p><b class="ui">「已延期」</b>是还要继续做、只是要往后推截止时间——在项目侧确认之前，原来的截止时间仍然有效。<b class="ui">「未完成」</b>是这条事务做不下去了，需要有人来处理。</p></div><div class="q"><b>菜单里找不到<b class="ui">「结构管理」</b>。</b><p>新官网上没有这个名字的页面。给执行型项目指定<b class="ui">「承接的中期目标」</b>这件事，本次窗口的入口以AI项目官网项目组通知为准，届时会连同操作说明一起发给母项目主创。</p></div><div class="q"><b>发现数据不对怎么办？</b><p>反馈给AI项目官网项目组，每天下午有固定的修复窗口。不要退回旧官网自己改——9 月 15 日之后两边不再同步。</p></div></div>
+</section>
+<section class="panel" id="p-daily" role="tabpanel" aria-labelledby="t-daily" tabindex="0" hidden><div class="panelhead"><p>9 月 2 日到 9 月 15 日，每天谁做什么、当天要看到什么结果。</p></div>
+<h2>逐日安排</h2><p class="note">周末（9/5、9/6、9/12、9/13）没有安排主创动作，只有系统侧的搬入和核对，表格里做了淡化处理。今天所在的一行有高亮。状态徽章来自每日进度记录。</p><div class="tw">
+<table>
+<thead><tr><th scope="col">日期 / 状态</th><th scope="col">系统 / 项目组</th><th scope="col">母项目主创</th><th scope="col">执行型项目主创</th><th scope="col">检查点</th></tr></thead>
+<tbody>
+<tr class="now"><th scope="row"><span class="chip s-todo now"><b>9/2</b><i>周三</i></span><span class="badge b-todo">未开始</span></th><td>制定本计划；完成旧官网正式环境的只读盘点（本文档的数据来源）。</td><td>无</td><td>无</td><td class="ck">计划发给伟华。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/3</b><i>周四</i></span><span class="badge b-todo">未开始</span></th><td>在测试环境用管理AI化跑通完整流程：确认中短期周期 → 指定谁承接 → 承接确认 → 确认阶段周期 → AI 拆事务 → 有人领走，并记录所有卡点。同时做三件准备：把搬家工具改成任意项目集都能搬（搬数据、搬目标、搬主创三处）；定下正式站清旧数据的方案和备份点；把开发清单发出去。</td><td>陈洁媛、刘佳文在测试环境看样板效果。</td><td>无</td><td class="ck">测试环境上至少拆出 1 个事务。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/4</b><i>周五</i></span><span class="badge b-todo">未开始</span></th><td>把这套功能发到正式站：全库备份 → 数据库升级 → 发布 → 检查。清掉正式站旧数据只留管理AI化；重新搬管理AI化整棵树（含 137532）；建第一个时间周期；发出中短期周期确认单据。</td><td>陈洁媛、刘佳文确认周期、为 4 个执行型项目重选承载的中期目标、发出承接指定；项目集负责人在项目集管理里补 128950、137522、137532 三个项目的主创。</td><td>陈家彬、黄世彪、张威虎接受承接、确认阶段周期。</td><td class="ck">正式站上管理AI化至少 136733 由 AI 开始拆事务。</td></tr>
+<tr class="we"><th scope="row"><span class="chip s-todo we"><b>9/5</b><i>周六</i></span><span class="badge b-todo">未开始</span></th><td>在正式站复核样板拆出来的事务和 AI 自动执行的结果，AI 验收官做第一道验收；在测试环境试搬 AI-员工 树；夜里把 AI-员工 搬进正式站并建第一个时间周期。</td><td>无</td><td>无</td><td class="ck">AI-员工 数据到位。</td></tr>
+<tr class="we"><th scope="row"><span class="chip s-todo we"><b>9/6</b><i>周日</i></span><span class="badge b-todo">未开始</span></th><td>核对搬进来的 AI-员工 数据：17 个执行型项目是否齐、层级是否正确、主创身份是否对；修复发现的问题。</td><td>无</td><td>无</td><td class="ck">数据核对完成。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/7</b><i>周一</i></span><span class="badge b-todo">未开始</span></th><td>下午集中修主创反馈的问题；准备 Open-Q 四棵树在测试环境试搬。</td><td>纵婷、杜建强在项目集管理补 137505、137517、137519 的主创；核对档案；为 17 个执行型项目重选承载的中期目标；确认中短期周期（6 条）；开始承接指定。</td><td>AI-员工 的 11 位主创登录，核对档案与最新版本。</td><td class="ck">AI-员工 的周期确认完成。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/8</b><i>周二</i></span><span class="badge b-todo">未开始</span></th><td>对已经指定好的项目发出承接确认单据和阶段确认单据；夜里搬入 Open-Q 四棵树并建第一个时间周期。</td><td>纵婷、杜建强完成全部承接指定。</td><td>AI-员工 主创接受承接、确认阶段周期（先走 137461 AI员工-场景需求管理，王雪滢；最新版本 8/31 已结束，先开新版本）。</td><td class="ck">AI-员工 先走的项目由 AI 开始拆事务。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/9</b><i>周三</i></span><span class="badge b-todo">未开始</span></th><td>核对搬进来的 Open-Q 数据（31 个执行型项目）；下午集中修问题。</td><td>Open-Q 四位上级主创（张彩霞、金伟华、卢贤明、彭靖）补 137512、137513、137550、137558 的主创；重选承载的中期目标；确认周期；开始指定。注意：金伟华将一次性收到 269 张承接指定单据，张彩霞收到 36 张。</td><td>AI-员工 其余主创完成确认；Open-Q 主创登录核对。</td><td class="ck">AI-员工 至少 6 个项目由 AI 开始拆事务（上限就是 6，因为上级只有 6 条中短期目标，一条目标同一时间只能有一个承接项目）。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/10</b><i>周四</i></span><span class="badge b-todo">未开始</span></th><td>夜里搬入 AI生产环境 + AI表演3.0 并建第一个时间周期；下午集中修问题。</td><td>Open-Q 上级主创继续做承接指定。</td><td>Open-Q 主创接受承接、确认阶段周期（先走 135460 Open-Q-中国版，褚泽彬）。</td><td class="ck">Open-Q 先走的项目由 AI 开始拆事务。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/11</b><i>周五</i></span><span class="badge b-todo">未开始</span></th><td>核对搬进来的 AI生产环境 / AI表演3.0 数据；出各项目集状态表（已拆出事务 / 待确认 / 未指定及原因）。</td><td>刘佳文在项目集管理里把溢鑫补为 136513 的主创；刘佳文、纵婷重选承载的中期目标；确认周期；做承接指定。</td><td>AI生产环境 / AI表演3.0 主创登录核对、接受承接、确认阶段周期（AI表演先走 137315，吴梦赢；AI生产环境先走 136513 生产管理AI化，溢鑫）；各集主创开始认领事务、提交、验收。</td><td class="ck">三个项目集都有项目由 AI 开始拆事务。</td></tr>
+<tr class="we"><th scope="row"><span class="chip s-todo we"><b>9/12</b><i>周六</i></span><span class="badge b-todo">未开始</span></th><td>盯着 AI 拆事务和 AI 自动执行，修复失败的运行；夜里搬入任运虚拟IP 并建第一个时间周期。</td><td>无</td><td>无</td><td class="ck">任运虚拟IP 数据到位。</td></tr>
+<tr class="we"><th scope="row"><span class="chip s-todo we"><b>9/13</b><i>周日</i></span><span class="badge b-todo">未开始</span></th><td>核对搬进来的任运虚拟IP 数据；修复问题。</td><td>无</td><td>无</td><td class="ck">数据核对完成。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/14</b><i>周一</i></span><span class="badge b-todo">未开始</span></th><td>五个项目集总检查：没接受的单据、没确认的周期、失败的运行逐项清干净；出 9/15 状态表。</td><td>五个项目集的上级主创对还没指定的项目做最后决定：要么指定，要么本周期放弃；屈琦走任运虚拟IP 的周期确认与指定。</td><td>落后的主创补做；反馈 AI 拆出来的事务好不好用；任运虚拟IP 主创接受承接。</td><td class="ck">状态表交 AI项目官网项目组。</td></tr>
+<tr class=""><th scope="row"><span class="chip s-todo"><b>9/15</b><i>周二</i></span><span class="badge b-todo">未开始</span></th><td>出最终状态表交金伟华，里面有张彩霞、纵婷、刘佳文三人对三个问题的原话；之后转入日常修问题。</td><td>项目组发通知：五个项目集以新官网为唯一维护入口，旧官网停止编辑，并配发操作说明。三位客户回答三个问题。</td><td>在新官网正常使用。</td><td class="ck">五个项目集每个至少 1 个执行型项目走完整个流程并拆出事务；人做的事务可认领、可提交、可验收；三位客户的原话记进状态表。</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</div></main>
+<footer><div class="wrap">
+本文档由 AI项目官网项目组生成于 2026-09-02，随执行进度每日重新生成。数据来源：旧官网正式环境 2026-09-02 只读盘点。
+问题反馈：AI项目官网项目组，每天下午固定修复窗口。
+</div></footer>
+<script>
+(function(){
+  var ids=["plan", "migrate", "howto", "daily"];
+  var tabs=Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function show(id,push){
+    if(ids.indexOf(id)<0){id=ids[0];}
+    tabs.forEach(function(t){
+      var on=t.dataset.tab===id;
+      t.setAttribute('aria-selected',on?'true':'false');
+      t.tabIndex=on?0:-1;
+      document.getElementById('p-'+t.dataset.tab).hidden=!on;
+    });
+    if(push&&location.hash.slice(1)!==id){history.replaceState(null,'','#'+id);}
+    window.scrollTo(0,0);
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(t.dataset.tab,true);});
+    t.addEventListener('keydown',function(e){
+      var n=null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown')n=(i+1)%tabs.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp')n=(i-1+tabs.length)%tabs.length;
+      else if(e.key==='Home')n=0;
+      else if(e.key==='End')n=tabs.length-1;
+      if(n!==null){e.preventDefault();tabs[n].focus();show(tabs[n].dataset.tab,true);}
+    });
+  });
+  window.addEventListener('hashchange',function(){show(location.hash.slice(1),false);});
+  show(location.hash.slice(1)||ids[0],false);
+
+  Array.prototype.slice.call(document.querySelectorAll('[data-print]')).forEach(function(b){
+    b.addEventListener('click',function(){
+      document.documentElement.setAttribute('data-print-only',b.dataset.print);
+      window.print();
+    });
+  });
+  window.addEventListener('afterprint',function(){
+    document.documentElement.removeAttribute('data-print-only');
+  });
+})();
+</script>
+</body>
+</html>
